@@ -6,9 +6,14 @@
     lock_timeout: 180
     state: present
 
+# Check state of KDC db
 - name: Configure the KDC
   become: true
-  shell: '/usr/sbin/kdb5_util create -s'
+  shell: '/usr/sbin/kdb5_util create -s -P {{ kdc_db_pw }}'
+
+- name: Create KDC Admin
+  become: true
+  shell: 'kadmin.local addprinc {{ kdc_admin_user }} -P {{ kdc_admin_password }}'
 
 - name: Enable kadmin
   become: true
