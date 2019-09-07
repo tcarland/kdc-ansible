@@ -1,0 +1,24 @@
+---
+sysctl_conf_template: sysctl.conf
+rc_local_template: rc.local
+security_limits_conf: limits.conf
+security_nproc_conf: 20-nproc.conf
+se_linux_conf: selinux.config
+
+yum_install_packages:
+ - nmap-ncat
+ - bind-utils
+ - MySQL-python
+ - bzip2
+ - unzip
+ - wget
+ - rng-tools
+ - openssl-devel
+ - zlib-devel
+ - krb5-devel
+ - krb5-workstation
+ - krb5-libs
+ - krb5-server
+
+yum_remove_packages:
+ - mariadb-libs

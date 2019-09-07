@@ -1,0 +1,8 @@
+---
+
+kdc_master_hostname: 'tdh-kdc01.c.alderberry-22.internal'
+kdc_slave_hostname: 'tdh-kdc02.c.alderberry-22.internal'
+
+kdc_primary_realm: 'alderberry-22.internal'
+
+kerberos_realm: 'ALDERBERRY-22.INTERNAL'
