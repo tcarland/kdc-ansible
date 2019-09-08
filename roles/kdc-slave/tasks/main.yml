@@ -1,0 +1,18 @@
+- name: Install KDC Server
+  become: true
+  yum:
+    name: '{{ yum_master_packages }}'
+    lock_timeout: 180
+    state: present
+
+# Check state of KDC db
+- name: Configure the KDC
+  become: true
+  shell: '/usr/sbin/kdb5_util create -s -P {{ kdc_db_pw }}'
+
+# gcp fwrule for tcp port 754 from master to slave kdc's
+
+- name: Setup kprop acl
+  become: true
+  shell: "echo host/{{ kdc_master_hostname }}@{{ kerberos_realm }} > /var/kerberos/krb5kdc/kpropd.acl"
+

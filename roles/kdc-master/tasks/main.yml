@@ -22,10 +22,17 @@
     state: started
     enabled: yes
 
-- name: Enable kdc
+- name: Enable KDC
   become: true
   systemd:
     name: krb5kdc
     state: started
     enabled: yes
 
+- name: Add Master Host Principal
+  become: true
+  shell: 'kadmin.local -q "addprinc host/{{ kdc_master_hostname }}@{{ kerberos_realm }}'
+
+- name: Add Slave Host Principal
+  become: true
+  shell: 'kadmin.local -q "addprinc host/{{ kdc_slave_hostname }}@{{ kerberos_realm }}'
