@@ -2,6 +2,8 @@
 kdc_master_hostname: 'tdh-kdc01.c.alderberry-22.internal'
 kdc_slave_hostname: 'tdh-kdc02.c.alderberry-22.internal'
 
-kdc_primary_realm: 'alderberry-22.internal'
+kdc_primary_realm: 'charltontechnology.net'
+kerberos_realm: 'CHARLTONTECHNOLOGY.NET'
 
-kerberos_realm: 'ALDERBERRY-22.INTERNAL'
+kdc_admin_user: 'tca'
+kdc_admin_principal: '{{ kdc_admin_user }}/admin'

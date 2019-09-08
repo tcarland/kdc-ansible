@@ -50,3 +50,24 @@
     dest: "/etc/selinux/config"
     mode: 0644
   notify: selinux_setenforce
+
+- name: Copy /etc/krb5.conf
+  become: true
+  template:
+    src: '{{ krb5_conf }}'
+    dest: "/etc/krb5.conf"
+    mode: 0644
+
+- name: Copy kdc.conf
+  become: true
+  template:
+    src: '{{ kdc_conf }}'
+    dest: "/var/kerberos/krb5kdc/kdc.conf"
+    mode: 0600
+
+- name: Copy kadm5.acl
+  become: true
+  template:
+    src: '{{ kadm5_acl }}'
+    dest: "/var/kerberos/krb5kdc/kadm5.acl"
+    mode: 0600

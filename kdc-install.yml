@@ -1,18 +1,28 @@
 ---
 - name: Install MIT KDC
   hosts: all
-  gather_facts: False
+  gather_facts: false
   
+- name: Deploy KDC Master
+  hosts: master01
+  gather_facts: false
+  tags: [ 'master1' ]
+  roles:
+    - 'kdc-master'
+
 - name: Deploy KDC Slave
   hosts: master02
-  gather_facts: False
+  gather_facts: false
   tags: [ 'master2' ]
   roles:
     - 'kdc-slave'
 
-- name: Deploy KDC Master
+- name: Dump Master DB
   hosts: master01
-  gather_facts: False
-  tags: [ 'master1' ]
-  roles:
-    - 'kdc-master'
+  gather_facts: false
+  tasks:
+    - name: Run dump
+      shell: "kdb5_util dump /var/kerberos/krb5kdc/slave_datatrans {{ kdc_slave_hostname }}"
+    - name: Propagate dump file
+      shell: "kprop -f /var/kerberos/krb5kdc/slave_datatrans {{ kdc_slave_hostname }}"
+

@@ -5,6 +5,10 @@ security_limits_conf: limits.conf
 security_nproc_conf: 20-nproc.conf
 se_linux_conf: selinux.config
 
+krb5_conf: krb5.conf
+kdc_conf: kdc.conf
+kadm5_acl: kadm5.acl
+
 yum_install_packages:
  - nmap-ncat
  - bind-utils

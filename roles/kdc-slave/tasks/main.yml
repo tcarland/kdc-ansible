@@ -6,13 +6,31 @@
     state: present
 
 # Check state of KDC db
-- name: Configure the KDC
+- name: Check for existing KDC db
+  stat:
+    path: '{{ kdc_db_file }}'
+  register: kdcdbstat
+
+- name: Configure the KDC DB
+  block:
+  - name: Configure the KDC
+    shell: '/usr/sbin/kdb5_util create -s -P {{ kdc_db_pw }}'
+  - name: Acquire Host Keytab
+    shell: "kadmin -p {{ kdc_admin_principal }} -r {{ kerberos_realm }} -P {{ kdc_admin_password }} -q 'ktadd host/{{ kdc_slave_hostname }}@{{ kerberos_realm }}'"
+  tags: [ kdc-init ]
+  when: not kdcdbstat.exists
   become: true
-  shell: '/usr/sbin/kdb5_util create -s -P {{ kdc_db_pw }}'
 
-# gcp fwrule for tcp port 754 from master to slave kdc's
-
-- name: Setup kprop acl
+- name: Enable KDC
   become: true
-  shell: "echo host/{{ kdc_master_hostname }}@{{ kerberos_realm }} > /var/kerberos/krb5kdc/kpropd.acl"
+  systemd:
+    name: krb5kdc
+    state: started
+    enabled: yes
 
+- name: Enable kpropd
+  become: true
+  systemd:
+    name: kprop
+    state: started
+    enabled: yes

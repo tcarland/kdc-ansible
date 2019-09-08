@@ -7,13 +7,27 @@
     state: present
 
 # Check state of KDC db
-- name: Configure the KDC
-  become: true
-  shell: '/usr/sbin/kdb5_util create -s -P {{ kdc_db_pw }}'
+- name: Check for existing KDC db
+  stat:
+    path: '{{ kdc_db_file }}'
+  register: kdcdbstat
 
-- name: Create KDC Admin
+- name: Configure the KDC DB
+  block:
+  - name: Configure the KDC
+    shell: '/usr/sbin/kdb5_util create -s -P {{ kdc_db_pw }}'
+  # TODO: -P not valid for addprinc
+  - name: Create KDC Admin
+    shell: 'kadmin.local "addprinc -pw {{ kdc_admin_password }} {{ kdc_admin_principal }}"'
+  - name: Add Master Host Principal
+    shell: 'kadmin.local -q "addprinc -randkey host/{{ kdc_master_hostname }}@{{ kerberos_realm }}"'
+  - name: Create Master Keytab
+    shell: 'kadmin.local -q "ktadd host/{{ kdc_master_hostname }}@{{ kerberos_realm }}"'
+  - name: Add Slave Host Principal
+    shell: 'kadmin.local -q "addprinc -randkey host/{{ kdc_slave_hostname }}@{{ kerberos_realm }}"'
+  tags: [ kdc-init ]
+  when: not kdcdbstat.exists
   become: true
-  shell: 'kadmin.local addprinc {{ kdc_admin_user }} -P {{ kdc_admin_password }}'
 
 - name: Enable kadmin
   become: true
@@ -29,10 +43,3 @@
     state: started
     enabled: yes
 
-- name: Add Master Host Principal
-  become: true
-  shell: 'kadmin.local -q "addprinc host/{{ kdc_master_hostname }}@{{ kerberos_realm }}'
-
-- name: Add Slave Host Principal
-  become: true
-  shell: 'kadmin.local -q "addprinc host/{{ kdc_slave_hostname }}@{{ kerberos_realm }}'
