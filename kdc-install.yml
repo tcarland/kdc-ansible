@@ -20,19 +20,17 @@
 - name: Dump Master DB
   hosts: master01
   gather_facts: false
-  become: true
   tasks:
     - name: Run dump
-      shell: "kdb5_util dump /var/kerberos/krb5kdc/slave_datatrans {{ kdc_slave_hostname }}"
+      shell: "kdb5_util dump /var/kerberos/krb5kdc/slave_datatrans"
     - name: Propagate dump file
       shell: "kprop -f /var/kerberos/krb5kdc/slave_datatrans {{ kdc_slave_hostname }}"
   tags: [ 'kdc-init' ]
+  become: true
 
 - name: Enable Slave KDC
   hosts: master02
   gather_facts: false
-  become: true
-  tags: [ 'master2' ]
   tasks:
     - name: systemd start&enable krb5kdc
       become: true
@@ -40,3 +38,5 @@
         name: krb5kdc
         state: started
         enabled: yes
+  tags: [ 'master2' ]
+  become: true

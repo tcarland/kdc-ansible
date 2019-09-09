@@ -10,9 +10,18 @@
   - name: Configure the KDC
     shell: '/usr/sbin/kdb5_util create -s -P {{ kdc_db_password }}'
   - name: Acquire Host Keytab
-    shell: "kadmin -p {{ kdc_admin_principal }} -r {{ kerberos_realm }} -P {{ kdc_admin_password }} -q 'ktadd host/{{ kdc_slave_hostname }}@{{ kerberos_realm }}'"
+    shell: "kadmin -p {{ kdc_admin_principal }} -r {{ kerberos_realm }} -w {{ kdc_admin_password }} -q 'ktadd host/{{ kdc_slave_hostname }}@{{ kerberos_realm }}'"
   tags: [ kdc-init ]
   when: not kdcdbstat.stat.exists
+  become: true
+
+- name: Configure kpropd.acl
+  block:
+  - name: Add master to acl
+    shell: "echo 'host/{{ kdc_master_hostname }}@{{ kerberos_realm }}' > {{ kpropd_file }}"
+  - name: Add slave to acl
+    shell: "echo 'host/{{ kdc_slave_hostname }}@{{ kerberos_realm }}' >> {{ kpropd_file }}"
+  tags: [ kdc-init ]
   become: true
 
 - name: Enable kpropd
