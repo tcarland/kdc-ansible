@@ -1,11 +1,4 @@
 ---
-- name: Install KDC Server
-  become: true
-  yum:
-    name: '{{ yum_master_packages }}'
-    lock_timeout: 180
-    state: present
-
 # Check state of KDC db
 - name: Check for existing KDC db
   stat:
@@ -15,8 +8,7 @@
 - name: Configure the KDC DB
   block:
   - name: Configure the KDC
-    shell: '/usr/sbin/kdb5_util create -s -P {{ kdc_db_pw }}'
-  # TODO: -P not valid for addprinc
+    shell: '/usr/sbin/kdb5_util create -s -P {{ kdc_db_password }}'
   - name: Create KDC Admin
     shell: 'kadmin.local "addprinc -pw {{ kdc_admin_password }} {{ kdc_admin_principal }}"'
   - name: Add Master Host Principal
@@ -26,7 +18,7 @@
   - name: Add Slave Host Principal
     shell: 'kadmin.local -q "addprinc -randkey host/{{ kdc_slave_hostname }}@{{ kerberos_realm }}"'
   tags: [ kdc-init ]
-  when: not kdcdbstat.exists
+  when: not kdcdbstat.stat.exists
   become: true
 
 - name: Enable kadmin

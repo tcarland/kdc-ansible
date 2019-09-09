@@ -14,11 +14,11 @@
 - name: Configure the KDC DB
   block:
   - name: Configure the KDC
-    shell: '/usr/sbin/kdb5_util create -s -P {{ kdc_db_pw }}'
+    shell: '/usr/sbin/kdb5_util create -s -P {{ kdc_db_password }}'
   - name: Acquire Host Keytab
     shell: "kadmin -p {{ kdc_admin_principal }} -r {{ kerberos_realm }} -P {{ kdc_admin_password }} -q 'ktadd host/{{ kdc_slave_hostname }}@{{ kerberos_realm }}'"
   tags: [ kdc-init ]
-  when: not kdcdbstat.exists
+  when: not kdcdbstat.stat.exists
   become: true
 
 - name: Enable kpropd

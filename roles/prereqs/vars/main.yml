@@ -8,6 +8,7 @@ se_linux_conf: selinux.config
 krb5_conf: krb5.conf
 kdc_conf: kdc.conf
 kadm5_acl: kadm5.acl
+kdc_db_file: /var/kerberos/krb5kdc/password
 
 yum_install_packages:
  - nmap-ncat
