@@ -1,10 +1,4 @@
-- name: Install KDC Server
-  become: true
-  yum:
-    name: '{{ yum_master_packages }}'
-    lock_timeout: 180
-    state: present
-
+---
 # Check state of KDC db
 - name: Check for existing KDC db
   stat:

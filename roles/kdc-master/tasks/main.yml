@@ -10,7 +10,7 @@
   - name: Configure the KDC
     shell: '/usr/sbin/kdb5_util create -s -P {{ kdc_db_password }}'
   - name: Create KDC Admin
-    shell: 'kadmin.local "addprinc -pw {{ kdc_admin_password }} {{ kdc_admin_principal }}"'
+    shell: 'kadmin.local -q "addprinc -pw {{ kdc_admin_password }} {{ kdc_admin_principal }}"'
   - name: Add Master Host Principal
     shell: 'kadmin.local -q "addprinc -randkey host/{{ kdc_master_hostname }}@{{ kerberos_realm }}"'
   - name: Create Master Keytab
