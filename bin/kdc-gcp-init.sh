@@ -9,7 +9,8 @@ tdh_path="$1"
 mtype="$2"
 
 if [ -z "$tdh_path" ]; then
-    echo "Usage: $PNAME [path/to/tdh-gcp]"
+    echo "Usage: $PNAME [path/to/tdh-gcp] <machine-type>"
+    echo "  Default machine-type is 'n1-standard-1'"
     exit 0
 fi
 
