@@ -26,3 +26,14 @@
     - name: Propagate dump file
       shell: "kprop -f /var/kerberos/krb5kdc/slave_datatrans {{ kdc_slave_hostname }}"
 
+- name: Enable Slave KDC
+  hosts: master02
+  gather_facts: false
+  tags: [ 'master2' ]
+  tasks:
+    - name: systemd start&enable krb5kdc
+      become: true
+      systemd:
+        name: krb5kdc
+        state: started
+        enabled: yes

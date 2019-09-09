@@ -21,13 +21,6 @@
   when: not kdcdbstat.exists
   become: true
 
-- name: Enable KDC
-  become: true
-  systemd:
-    name: krb5kdc
-    state: started
-    enabled: yes
-
 - name: Enable kpropd
   become: true
   systemd:
