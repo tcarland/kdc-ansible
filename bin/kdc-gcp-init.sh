@@ -19,6 +19,6 @@ if [ -z "$mtype" ]; then
 fi
 
 # default hostnames as tdh-kdc01 and tdh-kdc02
-( ${tdh_path}/bin/tdh-gcp-compute.sh -t $mtype kdc01 kdc02 )
+( ${tdh_path}/bin/tdh-gcp-compute.sh -t $mtype create kdc01 kdc02 )
 
 exit 0
