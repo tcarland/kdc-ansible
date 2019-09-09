@@ -1,6 +1,11 @@
-KDC-Ansible
-===========
+KDC-Ansible v0.1.1
+==================
 
-### Version 0.1
+Ansible Playbook for installing a pair of MIT KDC's on GCP Instances. 
+This assumes ssh passwordless logins have already been configured 
+for the instances.
 
-Playbook for installing a pair of MIT KDC's on GCP Instances.
+```
+ansible-playbook -i inventory/${gcp_inv} kdc-install.yml
+```
+
