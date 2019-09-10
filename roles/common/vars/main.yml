@@ -1,0 +1,13 @@
+---
+krb5_path: /var/kerberos/krb5kdc
+
+kdc_conf: kdc.conf
+kadm5_acl: kadm5.acl
+kpropd_acl: kpropd.acl
+
+kdc_db_file: '{{ krb5_path }}/principal'
+kpropd_file: '{{ krb5_path }}/{{ kpropd_acl }}'
+
+yum_master_packages:
+ - krb5-libs
+ - krb5-server

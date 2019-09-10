@@ -13,60 +13,9 @@
     lock_timeout: 180
     state: present
 
-- name: Copy sysctl config
-  become: true
-  template:
-    src: '{{ sysctl_conf_template }}'
-    dest: "/etc/sysctl.conf"
-    mode: 0644
-  notify: source sysctl.conf
-
-- name: Copy rc local
-  become: true
-  template:
-    src: '{{ rc_local_template }}'
-    dest: "/etc/rc.d/rc.local"
-    mode: 0755
-
-- name: Copy security limits.conf
-  become: true
-  template:
-    src: '{{ security_limits_conf }}'
-    dest: "/etc/security/limits.conf"
-    mode: 0644
-
-- name: Copy security 20-nproc.conf
-  become: true
-  template:
-    src: '{{ security_nproc_conf }}'
-    dest: "/etc/security/limits.d/20-nproc.conf"
-    mode: 0644
-
-- name: Copy selinux.conf
-  become: true
-  template:
-    src: '{{ se_linux_conf }}'
-    dest: "/etc/selinux/config"
-    mode: 0644
-  notify: selinux_setenforce
-
 - name: Copy /etc/krb5.conf
   become: true
   template:
     src: '{{ krb5_conf }}'
     dest: "/etc/krb5.conf"
     mode: 0644
-
-- name: Copy kdc.conf
-  become: true
-  template:
-    src: '{{ kdc_conf }}'
-    dest: "/var/kerberos/krb5kdc/kdc.conf"
-    mode: 0600
-
-- name: Copy kadm5.acl
-  become: true
-  template:
-    src: '{{ kadm5_acl }}'
-    dest: "/var/kerberos/krb5kdc/kadm5.acl"
-    mode: 0600

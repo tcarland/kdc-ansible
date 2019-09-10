@@ -1,0 +1,22 @@
+---
+# Tasks common to both Master and Slave KDC's
+- name: Install Master Packages
+  become: true
+  yum:
+    name: '{{ yum_master_packages }}'
+    lock_teimout: 180
+    state: present
+
+- name: Copy kdc.conf
+  become: true
+  template:
+    src: '{{ kdc_conf }}'
+    dest: "/var/kerberos/krb5kdc/kdc.conf"
+    mode: 0600
+
+- name: Copy kadm5.acl
+  become: true
+  template:
+    src: '{{ kadm5_acl }}'
+    dest: "/var/kerberos/krb5kdc/kadm5.acl"
+    mode: 0600

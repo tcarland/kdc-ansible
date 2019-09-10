@@ -3,7 +3,7 @@
 #  Initialize KDC Master and Slave(s) Compute Instances
 #
 PNAME=${0##*\/}
-version="v0.1.2"
+version="v0.1.3"
 
 tdh_path="$1"
 mtype="$2"

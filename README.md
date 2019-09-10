@@ -1,4 +1,4 @@
-KDC-Ansible v0.1.2
+KDC-Ansible v0.1.3
 ==================
 
 Ansible Playbook for installing a pair of MIT KDC's on GCP Instances. 
