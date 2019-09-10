@@ -16,8 +16,7 @@
   - name: Create Master Keytab
     shell: 'kadmin.local -q "ktadd host/{{ kdc_master_hostname }}@{{ kerberos_realm }}"'
   - name: Add Slave Host Principal(s)
-    shell: 'kadmin.local -q "addprinc -randkey host/{{ item }}@{{ kerberos_realm }}"'
-    with_items: 'kdc-slave_hostnames'
+    shell: 'kadmin.local -q "addprinc -randkey host/{{ kdc_slave_hostname }}@{{ kerberos_realm }}"'
   tags: [ kdc-init ]
   when: not kdcdbstat.stat.exists
   become: true

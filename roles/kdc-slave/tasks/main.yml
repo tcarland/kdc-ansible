@@ -20,8 +20,7 @@
   - name: Add master to acl
     shell: "echo 'host/{{ kdc_master_hostname }}@{{ kerberos_realm }}' > {{ kpropd_file }}"
   - name: Add slaves to acl
-    shell: "echo 'host/{{ item }}@{{ kerberos_realm }}' >> {{ kpropd_file }}"
-    with_items: '{{ kdc_slave_hostnames }}'
+    shell: "echo 'host/{{ kdc_slave_hostname }}@{{ kerberos_realm }}' >> {{ kpropd_file }}"
   tags: [ kdc-init ]
   become: true
 

@@ -3,7 +3,7 @@
 #  Initialize KDC Master and Slave(s) Compute Instances
 #
 PNAME=${0##*\/}
-version="v0.1.1"
+version="v0.1.2"
 
 tdh_path="$1"
 mtype="$2"
@@ -11,7 +11,7 @@ mtype="$2"
 if [ -z "$tdh_path" ]; then
     echo "Usage: $PNAME [path/to/tdh-gcp] <machine-type>"
     echo "  Default machine-type is 'n1-standard-1'"
-    exit 0
+    exit 1
 fi
 
 if [ -z "$mtype" ]; then
@@ -19,6 +19,6 @@ if [ -z "$mtype" ]; then
 fi
 
 # default hostnames as tdh-kdc01 and tdh-kdc02
-( ${tdh_path}/bin/tdh-gcp-compute.sh -t $mtype create kdc01 kdc02 )
+( ${tdh_path}/bin/tdh-gcp-compute.sh -b 32G -t $mtype create kdc01 kdc02 )
 
-exit 0
+exit $?

@@ -1,0 +1,9 @@
+---
+kdc_master_hostname: 'tdh-kdc01.c.t3-dataintellence.internal'
+kdc_slave_hostname: 'tdh-kdc02.c.t3-dataintellence.internal'
+
+kdc_primary_realm: 'di.trace3.com'
+kerberos_realm: 'DI.TRACE3.COM'
+
+kdc_admin_user: 'tca'
+kdc_admin_principal: '{{ kdc_admin_user }}/admin'

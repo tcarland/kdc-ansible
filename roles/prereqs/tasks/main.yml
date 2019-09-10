@@ -1,6 +1,5 @@
 ---
 # KDC Prerequisites
-#
 - name: Remove Packages
   become: true
   yum:
