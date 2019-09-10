@@ -1,5 +1,4 @@
 ---
-# Check state of KDC db
 - name: Check for existing KDC db
   stat:
     path: '{{ kdc_db_file }}'
@@ -7,7 +6,7 @@
 
 - name: Configure the KDC DB
   block:
-  - name: Configure the KDC
+  - name: Create the db
     shell: '/usr/sbin/kdb5_util create -s -P {{ kdc_db_password }}'
   - name: Create KDC Admin
     shell: 'kadmin.local -q "addprinc -pw {{ kdc_admin_password }} {{ kdc_admin_principal }}"'
@@ -15,7 +14,7 @@
     shell: 'kadmin.local -q "addprinc -randkey host/{{ kdc_master_hostname }}@{{ kerberos_realm }}"'
   - name: Create Master Keytab
     shell: 'kadmin.local -q "ktadd host/{{ kdc_master_hostname }}@{{ kerberos_realm }}"'
-  - name: Add Slave Host Principal(s)
+  - name: Add Slave Host Principal
     shell: 'kadmin.local -q "addprinc -randkey host/{{ kdc_slave_hostname }}@{{ kerberos_realm }}"'
   tags: [ kdc-init ]
   when: not kdcdbstat.stat.exists

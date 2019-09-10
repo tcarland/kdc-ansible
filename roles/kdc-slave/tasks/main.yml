@@ -7,10 +7,10 @@
 
 - name: Configure the KDC DB
   block:
-  - name: Configure the KDC
+  - name: Create the temp slave db
     shell: '/usr/sbin/kdb5_util create -s -P {{ kdc_db_password }}'
   - name: Acquire Host Keytab
-    shell: "kadmin -p {{ kdc_admin_principal }} -r {{ kerberos_realm }} -w {{ kdc_admin_password }} -q 'ktadd host/{{ inventory_hostname }}@{{ kerberos_realm }}'"
+    shell: "kadmin -p {{ kdc_admin_principal }} -r {{ kerberos_realm }} -w {{ kdc_admin_password }} -q 'ktadd host/{{ kdc_slave_hostname }}@{{ kerberos_realm }}'"
   tags: [ kdc-init ]
   when: not kdcdbstat.stat.exists
   become: true
