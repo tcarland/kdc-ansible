@@ -5,7 +5,7 @@
 #  with defaults provided.
 #
 PNAME=${0##*\/}
-version="v0.1.4"
+version="v0.1.5"
 
 tdh_path=
 bootsize="32G"
@@ -110,15 +110,19 @@ echo ""
 echo " ( $cmd ) "
 echo ""
 
-if [ "$action" == "run" ]; then
+if [ "$action" == "run" ] && [ $dryrun -eq 0 ]; then
     ( $cmd )
 fi
 
 host="tdh-kdc01"
+if [ -n "$prefix" ]; then
+    host="${prefix}-kdc01"
+fi
+
 if [ $dryrun -eq 0 ]; then
     sleep 10
     for x in {1..3}; do 
-        yf=$( $gssh ${host} --command 'uname -n' )
+        yf=$( $gssh $host --command 'uname -n' )
         if [[ $yf == $host ]]; then
             echo " It's ALIIIIVE!!!"
             break
