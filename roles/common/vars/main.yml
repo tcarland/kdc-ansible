@@ -11,3 +11,4 @@ kpropd_file: '{{ krb5_path }}/{{ kpropd_acl }}'
 yum_master_packages:
  - krb5-libs
  - krb5-server
+ - logrotate

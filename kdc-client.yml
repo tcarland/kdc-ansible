@@ -1,6 +1,5 @@
 ---
-# Install client prereqs
-- name: Install Kerberos Client
+- name: Install Kerberos Client 
   hosts: all
   gather_facts: false
   roles:
