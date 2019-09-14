@@ -1,11 +1,9 @@
 
-
-
 [master01]
-tdh-kdc01
+cdh6-m01
 
 [master02]
-tdh-kdc02
+cdh6-m02
 
 [masters:children]
 master01

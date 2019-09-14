@@ -16,6 +16,7 @@ zone=
 prefix=
 dryrun=0
 
+
 usage() {
     echo ""
     echo "Usage: $PNAME [options] [action] [path/to/tdh-gcp]"
@@ -25,6 +26,33 @@ usage() {
     echo "  [action]   :  Any action other tnan 'run' enables dryrun"
     echo ""
 }
+
+
+wait_for_host() {
+    local ssh="$1"
+    local rt=1
+    local x=
+
+    if [ -z "$ssh" ]; then
+        echo "wait_for_host(): target not provided."
+        return 1
+    fi
+
+    sleep 3
+    for x in {1..3}; do 
+        yf=$( $ssh --command 'uname -n' )
+        if [[ $yf == $host ]]; then
+            echo " It's ALIIIIVE!!!"
+            rt=0
+            break
+        fi 
+        echo -n ". "
+        sleep 3
+    done
+
+    return $rt
+}
+
 
 # Main
 rt=0
@@ -85,18 +113,19 @@ if [ -z "$tdh_path" ]; then
     exit 1
 fi
 
+if [ -z "$zone" ]; then
+    zone=$( gcloud config list | grep zone | awk -F= '{ print $2 }' )
+fi
+
 if [ -z "$mtype" ]; then
     mtype="n1-standard-1"
 fi
 
 # default hostnames as tdh-kdc01 and tdh-kdc02
-cmd="${tdh_path}/bin/tdh-gcp-compute.sh \\
+cmd="${tdh_path}/bin/tdh-gcp-compute.sh --zone $zone \\
  --bootsize $bootsize --machine-type $mtype \\
  --network $network --subnet $subnet"
 
-if [ -n "$zone" ]; then
-    cmd="$cmd --zone $zone"
-fi
 if [ -n "$prefix" ]; then
     cmd="$cmd --prefix $prefix"
 fi
@@ -114,25 +143,18 @@ if [ "$action" == "run" ] && [ $dryrun -eq 0 ]; then
     ( $cmd )
 fi
 
+gssh="gcloud compute ssh --zone $zone"
 host="tdh-kdc01"
 if [ -n "$prefix" ]; then
     host="${prefix}-kdc01"
 fi
 
-if [ $dryrun -eq 0 ]; then
-    sleep 10
-    for x in {1..3}; do 
-        yf=$( $gssh $host --command 'uname -n' )
-        if [[ $yf == $host ]]; then
-            echo " It's ALIIIIVE!!!"
-            break
-        fi 
-        echo -n ". "
-        sleep 5
-    done
-
+wait_for_host "$gssh $host"
+if [ $? -eq 0 ]; then
     ( $gssh $host --command 'yum install -y ansible' )
     ( $tdh_path/bin/gcp-push.sh . kdc-ansible $host )
+else
+    echo "Host '$host' didn't respond or the request timed out"
 fi
 
 echo ""

@@ -3,7 +3,6 @@
 #  Run client playbook on a list of hosts
 #
 PNAME=${0##*\/}
-
 hosts="$@"
 
 if [ -z "$hosts" ]; then
@@ -12,8 +11,8 @@ if [ -z "$hosts" ]; then
 fi
 
 inv=$( echo $hosts | sed -e 's/[[:space:]][[:space:]]*/,/g' )
+echo "( ansible-playbook -i $inv kdc-client.yml )"
 
-#echo "( ansible-playbook -i $inv kdc-client.yml )"
 ( ansible-playbook -i $inv kdc-client.yml )
 
 exit $?    
