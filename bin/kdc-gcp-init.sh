@@ -9,8 +9,8 @@ version="v0.1.5"
 
 tdh_path=
 bootsize="32G"
-network="tdh-net"
-subnet="tdh-net-west1"
+network="default"
+subnet="default"
 mtype="n1-standard-1"
 zone=
 prefix=
@@ -22,6 +22,7 @@ usage() {
     echo "Usage: $PNAME [options] [action] [path/to/tdh-gcp]"
     echo "  [-bpnNtz]  :  options available from tdh-gcp-compute.sh"
     echo "    refer to \$TDH_GCP_PATH/tdh-gcp-compute.sh --help"
+    echo "   Note the network is set to "default" by default."
     echo "  --dryrun   :  Enable dryrun mode on compute script"
     echo "  [action]   :  Any action other tnan 'run' enables dryrun"
     echo ""
