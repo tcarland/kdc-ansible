@@ -1,0 +1,1 @@
+*/5 * * * * /sbin/kdb5_util dump /var/kerberos/krb5kdc/slave_datatrans && /sbin/kprop {{ kdc_slave_hostname }} 2>&1 > /dev/null

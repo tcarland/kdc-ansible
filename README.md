@@ -9,29 +9,36 @@ is run from the master.
 
 ## Running the Playbook:
   
-  A script is provided to simplify execution.
+A script is provided to simplify execution of the main playbook, *kdc-site.yml*.
 ```
-gcp_env="my_inv_name"
-
-$ ./bin/kdc-install.sh $gcp_env
-```
-
-or the equivalent
-```
-$ ansible-playbook -i inventory/${gcp_env} kdc-install.yml
+$ export GCP_ENV="inventory_name"
+$ ./bin/kdc-install.sh 
+# or 
+$ ./bin/kdc-install.sh [inventory_name]
 ```
 
-Clients can be installed via the *./bin/krb_client.sh* script which will 
-run the *kdc-client.yml* playbook on a provided list of hosts. The client 
+or the equivalent ansible command:
+```
+$ ansible-playbook -i inventory/${gcp_env} kdc-site.yml
+```
+
+Clients can be installed with the *./bin/kdc-clients.sh* script which will 
+run the *kdc-clients.yml* playbook on a provided list of hosts. The client 
 playbook simply installs krb5 client prerequisites and the */etc/krb5.conf* 
-file.
+file with the given inventory environment. So, given an inventory name of 
+*foo*, as in *./inventory/foo/hosts*, then we run a client playbook by 
+running the following:
+```
+./bin/kdc-client.sh foo host1 host2 host3
+```
 
+Note the command and inventory references are relative to the project root.
 
 ## Configuration:
 
-  Create an inventory for master/slave KDC consisting of two hosts. The playbook 
-currently only accounts for one slave KDC.  So for a given inventory you might have 
-a *hosts* file of the following:
+  Create an inventory for master/slave KDC consisting of two hosts. The 
+playbook currently only accounts for one slave KDC.  So for a given inventory 
+you might have a *hosts* file of the following:
 ```
 [master01]
 kdc01
@@ -44,9 +51,9 @@ master01
 master02
 ```
 
-  The cluster configuration is defined in the inventory *vars* file coupled with 
-a *vault* file for passwords.  The *vars* define the fqdn of the master and
-slave KDC and the Kerberos Realm as follows:
+  The cluster configuration is defined in the inventory *vars* file coupled 
+with a *vault* file for passwords.  The *vars* define the fqdn of the master 
+and slave KDC and the Kerberos Realm as follows:
 ```
 ---
 kdc_master_hostname: 'kdc01.c.mydomain.internal'

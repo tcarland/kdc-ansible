@@ -19,3 +19,10 @@
     src: '{{ krb5_conf }}'
     dest: "/etc/krb5.conf"
     mode: 0644
+
+- name: Copy crontab file
+  become: true
+  template:
+    src: '{{ crontab_file }}'
+    dest: "/root/crontab.txt"
+    mode: 0644

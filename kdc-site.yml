@@ -32,10 +32,19 @@
   hosts: master02
   gather_facts: false
   tasks:
-    - name: systemd start&enable krb5kdc
+    - name: systemd start krb5kdc
       systemd:
         name: krb5kdc
         state: started
         enabled: yes
   tags: [ 'master2' ]
+  become: true
+
+- name: Setup KDC Replication
+  hosts: master01
+  gather_facts: false
+  tasks:
+    - name: Setup kprop crontab
+      shell: 'crontab /root/crontab.txt'
+  tags: [ 'master1' ]
   become: true
