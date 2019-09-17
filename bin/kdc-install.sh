@@ -10,7 +10,7 @@ if [ -z "$gcpenv" ]; then
 fi
 
 if [ -z "$gcpenv" ]; then
-    echo "Please provide the inventory name/environment."
+    echo "Please provide the inventory name/environment or set GCP_ENV."
     echo ""
     echo "Usage $PNAME <inventory_name>"
     echo ""
