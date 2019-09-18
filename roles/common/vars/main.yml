@@ -9,6 +9,5 @@ kdc_db_file: '{{ krb5_path }}/principal'
 kpropd_file: '{{ krb5_path }}/{{ kpropd_acl }}'
 
 yum_master_packages:
- - krb5-libs
  - krb5-server
  - logrotate

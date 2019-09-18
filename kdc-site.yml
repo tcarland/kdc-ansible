@@ -48,3 +48,12 @@
       shell: 'crontab /root/crontab.txt'
   tags: [ 'master1' ]
   become: true
+
+- name: Configure KDC Renewable Tickets
+  hosts: master01
+  gather_facts: false
+  tasks:
+    - name: krbtgt  +allow_renewable
+      shell: 'kadmin.local -q "modprinc -maxlife 1days -maxrenewlife 7days +allow_renewable krbtgt/{{ kerberos_realm }}@{{ kerberos_realm }}"'
+  tags: [ 'master1' ]
+  become: true

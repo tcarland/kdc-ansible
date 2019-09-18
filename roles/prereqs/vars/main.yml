@@ -4,7 +4,7 @@ crontab_file: root-crontab.txt'
 
 yum_install_packages:
  - openssl-devel
- - krb5-devel
+ - krb5-libs
  - krb5-workstation
 
 yum_remove_packages:
