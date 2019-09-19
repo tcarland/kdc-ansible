@@ -20,3 +20,9 @@
     src: '{{ kadm5_acl }}'
     dest: "/var/kerberos/krb5kdc/kadm5.acl"
     mode: 0600
+
+- name: PermitRootLogin prohibit-password
+  become: true
+  shell: >
+    sed -E -i 's/(^PermitRootLogin ).*/\1prohibit-password/' /etc/ssh/sshd_config
+  notify: restart_sshd
