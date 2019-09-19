@@ -5,7 +5,7 @@
 #  with defaults provided.
 #
 PNAME=${0##*\/}
-version="v0.1.7"
+version="v0.1.8"
 
 tdh_path=
 bootsize="32G"

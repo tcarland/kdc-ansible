@@ -25,4 +25,7 @@
   template:
     src: '{{ crontab_file }}'
     dest: "/root/crontab.txt"
-    mode: 0644
+    mode: 0644a
+
+- name: Increase Host Entropy
+  shell: 'rngd -r /dev/urandom'

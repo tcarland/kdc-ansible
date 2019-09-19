@@ -6,6 +6,7 @@ yum_install_packages:
  - openssl-devel
  - krb5-libs
  - krb5-workstation
+ - rng-tools
 
 yum_remove_packages:
  - mariadb-libs
