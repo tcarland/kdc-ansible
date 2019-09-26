@@ -5,7 +5,7 @@
 #  with defaults provided.
 #
 PNAME=${0##*\/}
-version="v0.1.8"
+version="v0.1.9"
 
 tdh_path=
 bootsize="32G"
@@ -20,9 +20,9 @@ dryrun=0
 usage() {
     echo ""
     echo "Usage: $PNAME [options] [action] [path/to/tdh-gcp]"
-    echo "  [-bpnNtz]  :  options available from tdh-gcp-compute.sh"
-    echo "    refer to \$TDH_GCP_PATH/tdh-gcp-compute.sh --help"
-    echo "   Note the network is set to "default" by default."
+    echo "  [-bpnNtz]  :  Options from 'tdh-gcp/tdh-gcp-compute.sh'"
+    echo "                refer to \$TDH_GCP_PATH/tdh-gcp-compute.sh --help"
+    echo "                Note that by default the network is set to 'default'."
     echo "  --dryrun   :  Enable dryrun mode on compute script"
     echo "  [action]   :  Any action other tnan 'run' enables dryrun"
     echo ""

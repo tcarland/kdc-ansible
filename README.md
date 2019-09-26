@@ -1,11 +1,16 @@
 KDC-Ansible 
 ============
 
-Ansible Playbook for installing a pair of MIT KDC's on GCP. 
+Ansible Playbook for installing a pair of MIT KDC's on Google Cloud Platform. 
 This assumes ssh passwordless logins have already been configured 
 for the instances, at least from the ansible server to both KDC 
 servers or from the master to the slave instance if this playbook
-is run from the master.
+is to be run from the master. 
+
+The playbooks are not so GCP specific that they couldn't be used elsewhere as
+only the compute instance init script for creating GCP Instances is specific 
+to GCP.  The playbooks currently function with RHEL or CentOS flavors of Linux.
+
 
 ## Running the Playbook:
   
@@ -17,7 +22,7 @@ $ ./bin/kdc-install.sh
 $ ./bin/kdc-install.sh [inventory_name]
 ```
 
-or the equivalent ansible command:
+Which is equivalent to the ansible command:
 ```
 $ ansible-playbook -i inventory/${gcp_env} kdc-site.yml
 ```
@@ -26,13 +31,14 @@ Clients can be installed with the *./bin/kdc-clients.sh* script which will
 run the *kdc-clients.yml* playbook on a provided list of hosts. The client 
 playbook simply installs krb5 client prerequisites and the */etc/krb5.conf* 
 file with the given inventory environment. So, given an inventory name of 
-*foo*, as in *./inventory/foo/hosts*, then we run a client playbook by 
+*env*, as in *./inventory/env/hosts*, then we run a client playbook by 
 running the following:
 ```
-./bin/kdc-client.sh foo host1 host2 host3
+./bin/kdc-client.sh env host1 host2 host3
 ```
 
 Note the command and inventory references are relative to the project root.
+
 
 ## Configuration:
 
