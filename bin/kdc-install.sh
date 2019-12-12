@@ -3,14 +3,14 @@
 #  Wrapper script for running the install playbook
 #
 PNAME=${0##*\/}
-gcpenv="$1"
+kdcenv="$1"
 
-if [ -z "$gcpenv" ]; then
-    gcpenv="$GCP_ENV"
+if [ -z "$kdcenv" ]; then
+    kdcenv="$KDC_ENV"
 fi
 
-if [ -z "$gcpenv" ]; then
-    echo "Please provide the inventory name/environment or set GCP_ENV."
+if [ -z "$kdcenv" ]; then
+    echo "Please provide the inventory name/environment."
     echo ""
     echo "Usage $PNAME <inventory_name>"
     echo ""

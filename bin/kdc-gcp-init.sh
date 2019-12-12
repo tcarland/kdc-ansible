@@ -1,11 +1,11 @@
 #!/bin/bash
 #
-#  Initialize KDC Master and Slave(s) Compute Instances
-#  This script is a templated wrapper to tdh-gcp-compute.sh
+#  Initialize KDC Master and Slave(s) GCP Compute Instances
+#  This script is a templated wrapper to gcp-compute.sh (from `tdh-gcp`)
 #  with defaults provided.
 #
 PNAME=${0##*\/}
-version="v0.1.9"
+version="v0.2.0"
 
 tdh_path=
 bootsize="32G"
@@ -20,11 +20,11 @@ dryrun=0
 usage() {
     echo ""
     echo "Usage: $PNAME [options] [action] [path/to/tdh-gcp]"
-    echo "  [-bpnNtz]  :  Options from 'tdh-gcp/tdh-gcp-compute.sh'"
-    echo "                refer to \$TDH_GCP_PATH/tdh-gcp-compute.sh --help"
+    echo "  [-bpnNtz]  :  Options from 'tdh-gcp/gcp-compute.sh'"
+    echo "                refer to \$TDH_GCP_PATH/gcp-compute.sh --help"
     echo "                Note that by default the network is set to 'default'."
-    echo "  --dryrun   :  Enable dryrun mode on compute script"
-    echo "  [action]   :  Any action other tnan 'run' enables dryrun"
+    echo "  --dryrun   :  Enable dryrun mode on gcp-compute script"
+    echo "  [action]   :  Any action other than 'run' enables dryrun"
     echo ""
 }
 
@@ -35,18 +35,18 @@ wait_for_host() {
     local x=
 
     if [ -z "$ssh" ]; then
-        echo "wait_for_host(): target not provided."
+        echo "wait_for_host(): Target not provided."
         return 1
     fi
 
     sleep 3
-    for x in {1..3}; do 
+    for x in {1..3}; do
         yf=$( $ssh --command 'uname -n' )
         if [[ $yf == $host ]]; then
             echo " It's ALIIIIVE!!!"
             rt=0
             break
-        fi 
+        fi
         echo -n ". "
         sleep 3
     done
@@ -123,7 +123,7 @@ if [ -z "$mtype" ]; then
 fi
 
 # default hostnames as tdh-kdc01 and tdh-kdc02
-cmd="${tdh_path}/bin/tdh-gcp-compute.sh --zone $zone \\
+cmd="${tdh_path}/bin/gcp-compute.sh --zone $zone \\
  --bootsize $bootsize --machine-type $mtype \\
  --network $network --subnet $subnet"
 
