@@ -8,3 +8,7 @@ cdh6-m02
 [masters:children]
 master01
 master02
+
+[clients]
+cdh6-gw1
+cdh6-gw2

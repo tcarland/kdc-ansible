@@ -2,7 +2,7 @@ KDC-Ansible
 ============
 
 Ansible Playbook for installing a pair of MIT KDC's configured and replicating.
-This assumes ssh key logins have already been configured for the instances, or at
+This assumes ssh key logins have already been configured for the hosts, or at
 least from the Ansible server to both KDC servers or from the master to the
 slave instance if this playbook is to be run from the master.
 
@@ -11,7 +11,7 @@ The playbooks currently function with RHEL or CentOS flavors of Linux.
 
 ## Running the Playbook:
 
-A script is provided to simplify execution of the main playbook, *kdc-site.yml*.
+A script is provided to simplify execution of the main playbook `kdc-site.yml`.
 ```
 $ ./bin/kdc-install.sh [inventory_name]
 ```
@@ -52,8 +52,8 @@ master02
 ```
 
   The cluster configuration is defined in the inventory *vars* file coupled
-with a *vault* file for passwords.  The *vars* define the fqdn of the master
-and slave KDC and the Kerberos Realm as follows:
+with a *vault* file for passwords.  The *vars* define the *fqdn* of the master
+and slave KDCs and the Kerberos Realm as follows:
 ```
 ---
 kdc_master_hostname: 'kdc01.c.mydomain.internal'

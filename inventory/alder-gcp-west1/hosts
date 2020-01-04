@@ -8,3 +8,7 @@ tdh-m02
 [masters:children]
 master01
 master02
+
+[clients]
+tdh-mgr0
+
