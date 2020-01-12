@@ -10,13 +10,13 @@ if [ -z "$kdcenv" ]; then
 fi
 
 if [ -z "$kdcenv" ]; then
-    echo "Please provide the inventory name/environment."
+    echo "Please provide the ansible inventory name/environment."
     echo ""
     echo "Usage $PNAME <inventory_name>"
     echo ""
     exit 1
 fi
 
-( ansible-playbook -i inventory/${gcpenv}/hosts kdc-site.yml )
+( ansible-playbook -i inventory/${kdcenv}/hosts kdc-site.yml )
 
 exit $?

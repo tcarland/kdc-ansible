@@ -1,9 +1,9 @@
 
 [master01]
-tdh-m01
+tdh-nic01
 
 [master02]
-tdh-m02
+tdh-nic02
 
 [masters:children]
 master01
@@ -11,4 +11,3 @@ master02
 
 [clients]
 tdh-mgr0
-

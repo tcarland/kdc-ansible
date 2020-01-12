@@ -1,6 +1,6 @@
 ---
 krb5_conf: krb5.conf
-crontab_file: root-crontab.txt'
+crontab_file: root-crontab.txt
 
 yum_install_packages:
  - openssl-devel

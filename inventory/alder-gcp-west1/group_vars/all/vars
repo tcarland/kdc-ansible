@@ -1,6 +1,6 @@
 ---
-kdc_master_hostname: 'tdh-m01.c.alderberry-22.internal'
-kdc_slave_hostname: 'tdh-m02.c.alderberry-22.internal'
+kdc_master_hostname: 'tdh-nic01.c.alderberry-22.internal'
+kdc_slave_hostname: 'tdh-nic02.c.alderberry-22.internal'
 
 kdc_primary_realm: 'charltontechnology.net'
 kerberos_realm: 'CHARLTONTECHNOLOGY.NET'

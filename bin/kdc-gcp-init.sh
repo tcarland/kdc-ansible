@@ -5,7 +5,7 @@
 #  with defaults provided.
 #
 PNAME=${0##*\/}
-version="v0.2.0"
+version="v0.3.1"
 
 tdh_path=
 bootsize="32G"
@@ -43,7 +43,7 @@ wait_for_host() {
     for x in {1..3}; do
         yf=$( $ssh --command 'uname -n' )
         if [[ $yf == $host ]]; then
-            echo " It's ALIIIIVE!!!"
+            echo " HOST IS ALIVE"
             rt=0
             break
         fi
