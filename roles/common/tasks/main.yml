@@ -15,12 +15,31 @@
     state: present
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
+- name: Force use of /var/kerberos (ubuntu)
+  become: true
+  file:
+    path: '/var/kerberos'
+    owner: 'root'
+    group: 'root'
+    mode: 0750
+    state: directory
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
 - name: Copy kdc.conf
   become: true
   template:
     src: '{{ kdc_conf }}'
     dest: "/var/kerberos/krb5kdc/kdc.conf"
     mode: 0600
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: Copy kdc.conf (Ubuntu)
+  become: true
+  template:
+    src: '{{ kdc_conf }}'
+    dest: "/etc/krb5kdc/kdc.conf"
+    mode: 0600
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
 - name: Copy kadm5.acl
   become: true
