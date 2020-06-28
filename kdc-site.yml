@@ -1,7 +1,7 @@
 ---
 - name: Install MIT KDC
   hosts: all
-  gather_facts: false
+  gather_facts: true
 
 - name: Deploy KDC Master
   hosts: master01

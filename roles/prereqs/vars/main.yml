@@ -10,3 +10,8 @@ yum_install_packages:
 
 yum_remove_packages:
  - mariadb-libs
+
+apt_install_packages:
+ - openssl
+ - krb5-user
+ - rng-tools

@@ -5,13 +5,22 @@
   yum:
     name: '{{ yum_remove_packages }}'
     state: absent
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
 
-- name: Install Packages
+- name: Install Packages (yum)
   become: true
   yum:
     name: '{{ yum_install_packages }}'
     lock_timeout: 180
     state: present
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: Install Packages (apt)
+  become: true
+  apt:
+    name: '{{ apt_install_packages }}'
+    state: present
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
 - name: Copy /etc/krb5.conf
   become: true
@@ -20,12 +29,6 @@
     dest: "/etc/krb5.conf"
     mode: 0644
 
-- name: Copy crontab file
-  become: true
-  template:
-    src: '{{ crontab_file }}'
-    dest: "/root/crontab.txt"
-    mode: 0644
 
 - name: Increase Host Entropy
   become: true

@@ -20,6 +20,13 @@
   when: not kdcdbstat.stat.exists
   become: true
 
+- name: Copy crontab file
+  become: true
+  template:
+    src: '{{ crontab_file }}'
+    dest: "/root/crontab.txt"
+    mode: 0644
+    
 - name: Enable kadmin
   become: true
   systemd:
@@ -33,4 +40,3 @@
     name: krb5kdc
     state: started
     enabled: yes
-
