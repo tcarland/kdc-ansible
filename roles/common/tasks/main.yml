@@ -1,55 +1,46 @@
 ---
-# Tasks common to both Master and Slave KDC's
-- name: Install Master Packages
-  become: true
-  yum:
-    name: '{{ yum_master_packages }}'
-    lock_timeout: 180
-    state: present
+- name: Run RHEL/Centos tasks
+  block:
+  - name: Install Master Packages
+    yum:
+      name: '{{ yum_master_packages }}'
+      lock_timeout: 180
+      state: present
+  - name: Copy kdc.conf
+    template:
+      src: '{{ kdc_conf }}'
+      dest: "/var/kerberos/krb5kdc/kdc.conf"
+      mode: 0600
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
-
-- name: Install Master Packages
   become: true
-  apt:
-    name: '{{ apt_master_packages }}'
-    state: present
+
+- name: Run Debian/Ubuntu tasks
+  block:
+  - name: Install Master Packages
+    apt:
+      name: '{{ apt_master_packages }}'
+      state: present
+  - name: Create /var/kerberos on Ubuntu
+    file:
+      path: '{{ krb5_path }}'
+      owner: 'root'
+      group: 'root'
+      mode: 0750
+      state: directory
+  - name: Create include dir on Ubuntu
+    file:
+      path: '/etc/krb5.conf.d'
+      owner: 'root'
+      group: 'root'
+      mode: 0750
+      state: directory
+  - name: Copy kdc.conf (Ubuntu)
+    template:
+      src: '{{ kdc_conf }}'
+      dest: "/etc/krb5kdc/kdc.conf"
+      mode: 0600
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
-
-- name: Force use of /var/kerberos (ubuntu)
   become: true
-  file:
-    path: '{{ krb5_path }}'
-    owner: 'root'
-    group: 'root'
-    mode: 0750
-    state: directory
-  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
-
-- name: Set include dir on Ubuntu
-  become: true
-  file:
-    path: '/etc/krb5.conf.d'
-    owner: 'root'
-    group: 'root'
-    mode: 0750
-    state: directory
-  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
-
-- name: Copy kdc.conf
-  become: true
-  template:
-    src: '{{ kdc_conf }}'
-    dest: "/var/kerberos/krb5kdc/kdc.conf"
-    mode: 0600
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
-
-- name: Copy kdc.conf (Ubuntu)
-  become: true
-  template:
-    src: '{{ kdc_conf }}'
-    dest: "/etc/krb5kdc/kdc.conf"
-    mode: 0600
-  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
 - name: Copy kadm5.acl
   become: true
@@ -58,8 +49,14 @@
     dest: "/var/kerberos/krb5kdc/kadm5.acl"
     mode: 0600
 
-- name: PermitRootLogin prohibit-password
+#shell: >
+  #sed -E -i 's/(^PermitRootLogin ).*/\1prohibit-password/' /etc/ssh/sshd_config
+- name: SSH PermitRootLogin prohibit-password
   become: true
-  shell: >
-    sed -E -i 's/(^PermitRootLogin ).*/\1prohibit-password/' /etc/ssh/sshd_config
+  lineinfile:
+    dest: '/etc/ssh/sshd_config'
+    regexp: '^PermitRootLogin'
+    line: 'PermitRootLogin prohibit-password'
+    state: present
+    backup: yes
   notify: restart_sshd

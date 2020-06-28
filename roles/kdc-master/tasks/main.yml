@@ -28,7 +28,7 @@
     dest: "/root/crontab.txt"
     mode: 0644
 
-- name: Enable kadmin
+- name: Enable kadmin (rhel/centos)
   become: true
   systemd:
     name: kadmin

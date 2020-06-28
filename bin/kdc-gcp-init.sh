@@ -5,7 +5,6 @@
 #  with defaults provided.
 #
 PNAME=${0##*\/}
-version="v0.3.1"
 
 tdh_path=
 bootsize="32G"
@@ -90,10 +89,6 @@ while [ $# -gt 0 ]; do
         -z|--zone)
             zone="$2"
             shift
-            ;;
-        -V|--version)
-            version
-            exit $rt
             ;;
         *)
             action="$1"
