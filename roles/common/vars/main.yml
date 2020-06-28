@@ -14,4 +14,5 @@ yum_master_packages:
 
 apt_master_packages:
  - krb5-kdc
+ - krb5-admin-server
  - logrotate

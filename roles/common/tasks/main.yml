@@ -18,7 +18,7 @@
 - name: Force use of /var/kerberos (ubuntu)
   become: true
   file:
-    path: '/var/kerberos/krb5kdc'
+    path: '{{ krb5_path }}'
     owner: 'root'
     group: 'root'
     mode: 0750
