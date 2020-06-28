@@ -1,5 +1,6 @@
 ---
 - name: Check for existing KDC db
+  become: true
   stat:
     path: '{{ kdc_db_file }}'
   register: kdcdbstat
@@ -26,7 +27,7 @@
     src: '{{ crontab_file }}'
     dest: "/root/crontab.txt"
     mode: 0644
-    
+
 - name: Enable kadmin
   become: true
   systemd:
