@@ -5,21 +5,18 @@
 
 - name: Deploy KDC Master
   hosts: master01
-  gather_facts: false
   tags: [ 'master1' ]
   roles:
     - 'kdc-master'
 
 - name: Deploy KDC Slave
   hosts: master02
-  gather_facts: false
   tags: [ 'master2' ]
   roles:
     - 'kdc-slave'
 
 - name: Dump Master DB
   hosts: master01
-  gather_facts: false
   tasks:
     - name: Run dump
       shell: "kdb5_util dump /var/kerberos/krb5kdc/slave_datatrans"
@@ -30,7 +27,6 @@
 
 - name: Enable Slave KDC
   hosts: master02
-  gather_facts: false
   tasks:
     - name: systemd start krb5kdc
       systemd:
@@ -42,7 +38,6 @@
 
 - name: Setup KDC Replication
   hosts: master01
-  gather_facts: false
   tasks:
     - name: Setup kprop crontab
       shell: 'crontab /root/crontab.txt'
@@ -51,7 +46,6 @@
 
 - name: Configure KDC Renewable Tickets
   hosts: master01
-  gather_facts: false
   tasks:
     - name: krbtgt  +allow_renewable
       shell: 'kadmin.local -q "modprinc -maxlife 1days -maxrenewlife 7days +allow_renewable krbtgt/{{ kerberos_realm }}@{{ kerberos_realm }}"'
