@@ -1,19 +1,17 @@
 ---
-# KDC Prerequisites
-- name: Remove Packages
-  become: true
-  yum:
-    name: '{{ yum_remove_packages }}'
-    state: absent
+- name: RHEL/Centos Packages
+  block:
+  - name: Remove Unwanted Packages
+    yum:
+      name: '{{ yum_remove_packages }}'
+      state: absent
+  - name: Install Packages (yum)
+    yum:
+      name: '{{ yum_install_packages }}'
+      lock_timeout: 180
+      state: present
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
-
-- name: Install Packages (yum)
   become: true
-  yum:
-    name: '{{ yum_install_packages }}'
-    lock_timeout: 180
-    state: present
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
 
 - name: Install Packages (apt)
   become: true
@@ -28,7 +26,6 @@
     src: '{{ krb5_conf }}'
     dest: "/etc/krb5.conf"
     mode: 0644
-
 
 - name: Increase Host Entropy
   become: true

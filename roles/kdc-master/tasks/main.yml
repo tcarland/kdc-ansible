@@ -28,25 +28,32 @@
     dest: "/root/crontab.txt"
     mode: 0644
 
-- name: Enable kadmin (rhel/centos)
-  become: true
-  systemd:
-    name: kadmin
-    state: started
-    enabled: yes
+- name: Enable Services RHEL/CentOS
+  block:
+  - name: Enable kadmin (rhel/centos)
+    systemd:
+      name: kadmin
+      state: started
+      enabled: yes
+  - name: Enable KDC
+    systemd:
+      name: krb5kdc
+      state: started
+      enabled: yes
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
-
-- name: Enable kadmin (ubuntu)
   become: true
-  systemd:
-    name: krb5-admin-server
-    state: started
-    enabled: yes
+
+- name: Enable Services Debian/Ubuntu
+  block:
+  - name: Enable kadmin (ubuntu)
+    systemd:
+      name: krb5-admin-server
+      state: started
+      enabled: yes
+  - name: Enable KDC
+    systemd:
+      name: krb5-kdc
+      state: started
+      enabled: yes
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
-
-- name: Enable KDC
   become: true
-  systemd:
-    name: krb5kdc
-    state: started
-    enabled: yes

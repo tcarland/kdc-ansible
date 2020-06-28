@@ -24,9 +24,18 @@
   tags: [ kdc-init ]
   become: true
 
-- name: Enable kpropd
+- name: Enable kpropd (rhel/centos)
   become: true
   systemd:
     name: kprop
     state: started
     enabled: yes
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: Enable kpropd (ubuntu)
+  become: true
+  systemd:
+    name: krb5-kpropd
+    state: started
+    enabled: yes
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
