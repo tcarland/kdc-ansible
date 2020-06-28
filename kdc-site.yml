@@ -37,7 +37,7 @@
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
   become: true
 
- name: Enable Slave KDC (Ubuntu)
+- name: Enable Slave KDC (Ubuntu)
   hosts: master02
   tasks:
     - name: systemd start krb5kdc
