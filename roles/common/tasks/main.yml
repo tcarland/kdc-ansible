@@ -25,6 +25,16 @@
     state: directory
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
+- name: Set include dir on Ubuntu
+  become: true
+  file:
+    path: '/etc/krb5.conf.d'
+    owner: 'root'
+    group: 'root'
+    mode: 0750
+    state: directory
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
 - name: Copy kdc.conf
   become: true
   template:
