@@ -7,6 +7,7 @@ action=
 princ=
 pw=
 
+
 usage() {
     echo ""
     echo "Usage: $PNAME [-f infile]  [action]  <princ> <pw>"
@@ -79,6 +80,7 @@ if [ -z "$infile" ] && [ "$princ" ]; then
     exit 1
 fi
 
+
 case "$action" in 
     add)
         if [ -n "$infile" ]; then
@@ -102,6 +104,9 @@ case "$action" in
         else
             ( kadmin.local -q "delprinc $princ" )
         fi
+        ;;
+    list)
+        ( kadmin.local -q "listprincs" )
         ;;
     *)
         echo "Action not recognized. '$action'"

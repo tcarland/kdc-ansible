@@ -1,8 +1,8 @@
 #!/bin/bash
 #
 #  Initialize KDC Master and Slave(s) GCP Compute Instances
-#  This script is a templated wrapper to gcp-compute.sh (from `tdh-gcp`)
-#  with defaults provided.
+#  This script uses the gcp-compute.sh script from `tdh-gcp`
+#  project with defaults provided.
 #
 PNAME=${0##*\/}
 

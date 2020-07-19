@@ -49,8 +49,6 @@
     dest: "/var/kerberos/krb5kdc/kadm5.acl"
     mode: 0600
 
-#shell: >
-  #sed -E -i 's/(^PermitRootLogin ).*/\1prohibit-password/' /etc/ssh/sshd_config
 - name: SSH PermitRootLogin prohibit-password
   become: true
   lineinfile:

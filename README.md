@@ -13,7 +13,7 @@ The playbooks currently function with RHEL or CentOS flavors of Linux.
 
 A script is provided to simplify execution of the main playbook `kdc-site.yml`.
 ```
-$ ./bin/kdc-install.sh [inventory_name]
+$ ./bin/kdc-install.sh [inventory_name|env]
 ```
 
 Which is equivalent to the ansible command:
@@ -76,9 +76,9 @@ kdc_db_password: 'somepassword'
 kdc_admin_password: 'somepassword'
 ```
 
-Known issues:
+Caveat:
 
-**kprop Decrypt integrity check failed**:  
+**kprop decrypt integrity check failed**:  
   On re-deployments, there can be issues setting the host keytab in
 `/etc/krb5.keytab`. If attempting to re-deploy with a fresh database,
 pre-existing keytab files can cause kprop to fail. Remove any pre-existing
@@ -89,7 +89,7 @@ KDC usage:
 
 Add a new admin principal
 ```
-TMPPW="mytmppw"
+MYPW="mytmppw"
 USERNAME="adminuser"
 ank +needchange -pw $TMPPW  $USERNAME/admin
 ```

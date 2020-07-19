@@ -18,7 +18,7 @@ fi
 hosts=$( echo $hosts | sed -e 's/[[:space:]][[:space:]]*/,/g' )
 
 # Run playbook with list of hosts as inventory
-echo "( ansible-playbook -i $inv kdc-clients.yml --extra-vars \"@inventory/$inv/group_vars/all/vars\" )"
-( ansible-playbook -i $inv kdc-clients.yml --extra-vars "@inventory/$inv/group_vars/all/vars" )
+echo "( ansible-playbook -i $hosts kdc-clients.yml --extra-vars \"@inventory/$inv/group_vars/all/vars\" )"
+( ansible-playbook -i $hosts kdc-clients.yml --extra-vars "@inventory/$inv/group_vars/all/vars" )
 
 exit $?    
