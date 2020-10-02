@@ -25,7 +25,7 @@
       path: '{{ krb5_path }}'
       owner: 'root'
       group: 'root'
-      mode: 0750
+      mode: 0755
       state: directory
   - name: Create include dir on Ubuntu
     file:

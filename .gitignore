@@ -6,5 +6,5 @@
 *.jar
 *.zip
 .ansible
-#inventory/*
-#!inventory/example
+inventory/*
+!inventory/example
