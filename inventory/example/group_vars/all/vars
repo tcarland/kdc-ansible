@@ -1,6 +1,6 @@
 ---
-kdc_master_hostname: 'kdc01.domain.internal'
-kdc_slave_hostname: 'kdc02.domain.internal'
+kdc_primary_hostname: 'kdc01.domain.internal'
+kdc_secondary_hostname: 'kdc02.domain.internal'
 
 kdc_primary_realm: 'domain.com'
 kerberos_realm: 'REALM.COM'

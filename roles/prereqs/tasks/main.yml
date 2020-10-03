@@ -1,13 +1,13 @@
 ---
-- name: RHEL/Centos Packages
+- name: Configure KDC RHEL/Centos Packages
   block:
-  - name: Remove Unwanted Packages
+  - name: Remove unwanted packages (yum)
     yum:
       name: '{{ yum_remove_packages }}'
       state: absent
   - name: Install Packages (yum)
     yum:
-      name: '{{ yum_install_packages }}'
+      name: '{{ yum_prereq_packages }}'
       lock_timeout: 180
       state: present
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
@@ -16,7 +16,7 @@
 - name: Install Packages (apt)
   become: true
   apt:
-    name: '{{ apt_install_packages }}'
+    name: '{{ apt_prereq_packages }}'
     state: present
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 

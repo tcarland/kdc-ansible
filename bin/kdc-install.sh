@@ -3,7 +3,7 @@
 #  Wrapper script for running the install playbook
 #
 PNAME=${0##*\/}
-version="v0.4.3"
+version="v20.10"
 kdcenv="$1"
 rt=0
 

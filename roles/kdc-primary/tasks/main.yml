@@ -1,5 +1,5 @@
 ---
-- name: Check for existing KDC db
+- name: Check for an existing KDC DB
   become: true
   stat:
     path: '{{ kdc_db_file }}'
@@ -11,12 +11,12 @@
     shell: '/usr/sbin/kdb5_util create -s -P {{ kdc_db_password }}'
   - name: Create KDC Admin
     shell: 'kadmin.local -q "addprinc -pw {{ kdc_admin_password }} {{ kdc_admin_principal }}"'
-  - name: Add Master Host Principal
-    shell: 'kadmin.local -q "addprinc -randkey host/{{ kdc_master_hostname }}@{{ kerberos_realm }}"'
-  - name: Create Master Keytab
-    shell: 'kadmin.local -q "ktadd host/{{ kdc_master_hostname }}@{{ kerberos_realm }}"'
-  - name: Add Slave Host Principal
-    shell: 'kadmin.local -q "addprinc -randkey host/{{ kdc_slave_hostname }}@{{ kerberos_realm }}"'
+  - name: Add Primary Host Principal
+    shell: 'kadmin.local -q "addprinc -randkey host/{{ kdc_primary_hostname }}@{{ kerberos_realm }}"'
+  - name: Create Primary Host Keytab
+    shell: 'kadmin.local -q "ktadd host/{{ kdc_primary_hostname }}@{{ kerberos_realm }}"'
+  - name: Add Secondary Host Principal
+    shell: 'kadmin.local -q "addprinc -randkey host/{{ kdc_secondary_hostname }}@{{ kerberos_realm }}"'
   tags: [ kdc-init ]
   when: not kdcdbstat.stat.exists
   become: true
@@ -28,9 +28,9 @@
     dest: "/root/crontab.txt"
     mode: 0644
 
-- name: Enable Services RHEL/CentOS
+- name: Enable Services (RHEL/CentOS)
   block:
-  - name: Enable kadmin (rhel/centos)
+  - name: Enable kadmin 
     systemd:
       name: kadmin
       state: started
@@ -43,9 +43,9 @@
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
   become: true
 
-- name: Enable Services Debian/Ubuntu
+- name: Enable Services (Debian/Ubuntu)
   block:
-  - name: Enable kadmin (ubuntu)
+  - name: Enable kadmin 
     systemd:
       name: krb5-admin-server
       state: started
