@@ -1,13 +1,13 @@
 
-[master01]
+[primary]
 tdh-nic01
 
-[master02]
+[secondary]
 tdh-nic02
 
-[masters:children]
-master01
-master02
+[kdc:children]
+primary
+secondary
 
 [clients]
 tdh-mgr0

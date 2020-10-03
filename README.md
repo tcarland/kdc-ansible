@@ -36,8 +36,8 @@ Note the command and inventory references are relative to the project root.
 
 ## Configuration:
 
-  Create an inventory for KDC pair consisting of two hosts. The
-playbook currently only accounts for one slave KDC.  So for a given inventory
+  Create an inventory for KDC pair consisting of two hosts. The playbook 
+currently only accounts for one secondary KDC.  So for a given inventory
 you might have a *hosts* file of the following:
 ```
 [primary]
@@ -49,6 +49,8 @@ kdc02
 [kdc:children]
 primary
 secondary
+
+[clients]
 ```
 
   The cluster configuration is defined in the inventory *vars* file coupled
@@ -245,7 +247,7 @@ host principals for our primary and secondary KDC Servers.
 
 The examples below show `$kdc_secondary_hostname` as a variable, such as:
 ```
-$ kdc_secondary_hostname="kdc02.mycluster.internal"
+kdc_secondary_hostname="kdc02.mycluster.internal"
 ```
 
 ### Primary KDC Server
@@ -290,7 +292,7 @@ the db.
     /usr/sbin/kdb5_util create -s -P <pw>
     ```
 
-- Acquire the host key from the master. Note the use of `kadmin` instead 
+- Acquire the host key from the primary KDC. Note the use of `kadmin` instead 
 of `kadmin.local` which would connect to the secondary and not the primary.
     ```
     kadmin -p tca/admin -q "ktadd host/$kdc_secondary_hostname@REALM.COM"
@@ -305,12 +307,12 @@ of `kadmin.local` which would connect to the secondary and not the primary.
 
 - Run a dump on the primary.
     ```
-    kdb5_util dump /var/kerberos/krb5kdc/slave_datatrans
+    kdb5_util dump /var/kerberos/krb5kdc/kdb_datatrans
     ```
 
 - Send to secondary:
     ```
-    kprop -f /var/kerberos/krb5kdc/slave_datatrans $kdc_secondary_hostname"
+    kprop -f /var/kerberos/krb5kdc/kdb_datatrans $kdc_secondary_hostname"
     ```
 
 - On success of DB propagation, start the secondary KDC.
@@ -320,7 +322,8 @@ of `kadmin.local` which would connect to the secondary and not the primary.
 
 - Setup a crontab job to run the dump and kprop commands regularly.
     ```
-    $ echo "*/5 * * * * /sbin/kdb5_util dump /var/kerberos/krb5kdc/slave_datatrans && /sbin/kprop $KDC_SECONDARY_HOSTNAME 2>&1 >/dev/null" > kprop.crontab
+    $ echo "*/5 * * * * /sbin/kdb5_util dump /var/kerberos/krb5kdc/kdb_datatrans && \
+    /sbin/kprop -f /var/kerberos/krb5kdc/kdb_datatrans $kdc_secondary_hostname 2>&1 >/dev/null" > kprop.crontab
     $ crontab kprop.crontab
     ```
 

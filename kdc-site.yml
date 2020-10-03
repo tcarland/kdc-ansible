@@ -4,29 +4,29 @@
   gather_facts: true
 
 - name: Deploy KDC Primary
-  hosts: master01
-  tags: [ 'master1' ]
+  hosts: primary
+  tags: [ 'primary' ]
   roles:
-    - 'kdc-master'
+    - 'kdc-primary'
 
 - name: Deploy Secondary KDC
-  hosts: master02
-  tags: [ 'master2' ]
+  hosts: secondary
+  tags: [ 'secondary' ]
   roles:
-    - 'kdc-slave'
+    - 'kdc-secondary'
 
 - name: Dump Primary KDC DB
-  hosts: master01
+  hosts: primary
   tasks:
     - name: Run dump
-      shell: "kdb5_util dump /var/kerberos/krb5kdc/slave_datatrans"
+      shell: "kdb5_util dump /var/kerberos/krb5kdc/kdb_datatrans"
     - name: Propagate dump file
-      shell: "kprop -f /var/kerberos/krb5kdc/slave_datatrans {{ kdc_slave_hostname }}"
+      shell: "kprop -f /var/kerberos/krb5kdc/kdb_datatrans {{ kdc_secondary_hostname }}"
   tags: [ 'kdc-init' ]
   become: true
 
 - name: Enable Secondary KDC (RHEL/CentOS)
-  hosts: master02
+  hosts: secondary
   tasks:
     - name: systemd start krb5kdc
       systemd:
@@ -34,11 +34,11 @@
         state: started
         enabled: yes
       when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
-  tags: [ 'master2' ]
+  tags: [ 'secondary' ]
   become: true
 
 - name: Enable Secondary KDC (Ubuntu)
-  hosts: master02
+  hosts: secondary
   tasks:
     - name: systemd start krb5kdc
       systemd:
@@ -46,21 +46,21 @@
         state: started
         enabled: yes
       when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
-  tags: [ 'master2' ]
+  tags: [ 'secondary' ]
   become: true
 
 - name: Setup KDC Replication
-  hosts: master01
+  hosts: primary
   tasks:
     - name: Setup kprop crontab
       shell: 'crontab /root/crontab.txt'
-  tags: [ 'master1' ]
+  tags: [ 'primary' ]
   become: true
 
 - name: Configure KDC Renewable Tickets
-  hosts: master01
+  hosts: primary
   tasks:
     - name: krbtgt  +allow_renewable
       shell: 'kadmin.local -q "modprinc -maxlife 1days -maxrenewlife 7days +allow_renewable krbtgt/{{ kerberos_realm }}@{{ kerberos_realm }}"'
-  tags: [ 'master1' ]
+  tags: [ 'primary' ]
   become: true
