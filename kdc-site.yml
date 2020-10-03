@@ -3,19 +3,19 @@
   hosts: all
   gather_facts: true
 
-- name: Deploy KDC Master
+- name: Deploy KDC Primary
   hosts: master01
   tags: [ 'master1' ]
   roles:
     - 'kdc-master'
 
-- name: Deploy KDC Slave
+- name: Deploy Secondary KDC
   hosts: master02
   tags: [ 'master2' ]
   roles:
     - 'kdc-slave'
 
-- name: Dump Master DB
+- name: Dump Primary KDC DB
   hosts: master01
   tasks:
     - name: Run dump
@@ -25,7 +25,7 @@
   tags: [ 'kdc-init' ]
   become: true
 
-- name: Enable Slave KDC (RHEL/CentOS)
+- name: Enable Secondary KDC (RHEL/CentOS)
   hosts: master02
   tasks:
     - name: systemd start krb5kdc
@@ -37,7 +37,7 @@
   tags: [ 'master2' ]
   become: true
 
-- name: Enable Slave KDC (Ubuntu)
+- name: Enable Secondary KDC (Ubuntu)
   hosts: master02
   tasks:
     - name: systemd start krb5kdc

@@ -10,14 +10,14 @@ pw=
 
 usage() {
     echo ""
-    echo "Usage: $PNAME [-f infile]  [action]  <princ> <pw>"
+    echo "Usage: $PNAME [-f infile]  [action]  <princ> "
     echo "  -f|--file <file> : Performs the action on a list of principals"
     echo "  -h|--help        : Show help and exit"
     echo "    [action]       : [ add|del|list ]"
-    echo "    <princ> <pw>   : If --file is not provided, the script "
-    echo "  will perform a one-time action on the provided principal. "
-    echo "  Providing the <pw> is optional and insecure. If not provided,"
-    echo "  the script will prompt for the password."
+    echo "    <princ> <pw>   "
+    echo "" 
+    echo " If '--file' is not provided, the script will perform a one-time"
+    echo " action on the provided principal prompting for a password."
     echo "" 
 }
 
@@ -49,7 +49,7 @@ rt=0
 
 while [ $# -gt 0 ]; do
     case "$1" in
-        -h|--help)
+        'help'|-h|--help)
             usage
             exit $rt
             ;;
@@ -60,7 +60,7 @@ while [ $# -gt 0 ]; do
         --dryrun)
             dryrun=1
             ;;
-        -V|--version)
+        'version'|-V|--version)
             version
             exit $rt
             ;;

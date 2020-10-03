@@ -1,9 +1,9 @@
 ---
 - name: Run RHEL/Centos tasks
   block:
-  - name: Install Master Packages
+  - name: Install Primary KDC Packages (yum)
     yum:
-      name: '{{ yum_master_packages }}'
+      name: '{{ yum_kdc_packages }}'
       lock_timeout: 180
       state: present
   - name: Copy kdc.conf
@@ -16,9 +16,9 @@
 
 - name: Run Debian/Ubuntu tasks
   block:
-  - name: Install Master Packages
+  - name: Install Primary KDC Packages (apt)
     apt:
-      name: '{{ apt_master_packages }}'
+      name: '{{ apt_kdc_packages }}'
       state: present
   - name: Create /var/kerberos on Ubuntu
     file:
