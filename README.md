@@ -1,13 +1,16 @@
 KDC-Ansible
 ============
 
-Ansible Playbook for installing a pair of MIT KDC's configured and replicating.
-This assumes ssh key logins have already been configured for the hosts, or at
-least from the Ansible server to both KDC servers or from the primary to the
-secondary instance if this playbook is to be run from the master.
+An Ansible Playbook for installing a pair of MIT KDC's configured 
+and replicating. This assumes ssh key logins have already been 
+configured for the hosts, or at least from the Ansible server to 
+both KDC servers or from the primary to the secondary instance if 
+this playbook is to be run from the master.
 
-The playbooks currently function with RHEL / CentOS7.x or Ubuntu 20.04
-
+The playbooks currently support the following distributions:
+- rhel7.x
+- centos7.x
+- ubuntu 20.04 (debian)
 
 ## Running the Playbook:
 
@@ -18,27 +21,29 @@ $ ./bin/kdc-install.sh [inventory_name|env]
 
 Which is equivalent to the ansible command:
 ```
-$ ansible-playbook -i inventory/${env} kdc-site.yml
+$ ansible-playbook -i inventory/${env}/hosts kdc-site.yml
 ```
 
 Clients can be installed with the *./bin/kdc-clients.sh* script which will
 run the *kdc-clients.yml* playbook on a provided list of hosts. The client
-playbook simply installs krb5 client prerequisites and the */etc/krb5.conf*
-file with the given inventory environment. So, given an inventory name of
-*env*, as in *./inventory/env/hosts*, then we run a client playbook by
-running the following:
+playbook directly installs krb5 client prerequisites and the */etc/krb5.conf*
+file.
+
+Given an inventory name of *myenv*, as in *./inventory/myenv/hosts*, then 
+the client playbook can be applied by running the following:
 ```
-./bin/kdc-client.sh env host1 host2 host3
+./bin/kdc-client.sh myenv host1 host2 host3
 ```
 
-Note the command and inventory references are relative to the project root.
+Note the command and inventory references above are relative to the project root.
 
 
 ## Configuration:
 
-  Create an inventory for KDC pair consisting of two hosts. The playbook 
-currently only accounts for one secondary KDC.  So for a given inventory
-you might have a *hosts* file of the following:
+Create an inventory for a KDC pair (two hosts to run in a master/slave 
+configuration, referred to as `primary` and `secondary` from here out. 
+The playbook currently only accounts for a single secondary KDC.  
+For a given inventory you might have a *hosts* file of the following:
 ```
 [primary]
 kdc01
@@ -237,7 +242,6 @@ host keytab files prior to a fresh install.
 
 ---
 
-
 ## KDC Configuration - Primary/Secondary (aka. master/slave) 
 
 This section describes the general process performed by Ansible. The 
@@ -345,8 +349,8 @@ and their passwords, and adds them to the Kerberos database. The file would
 contain a principal and the respective password as a spece delimited pair on 
 one line.
 
- - The `ank` command *adds a new key*, and `ank` is an alias for the `add_principal` 
-command.
+ - The `ank` command *adds a new key*, and `ank` is an alias for the 
+`add_principal` command.
 
  - The `+needchange` option configures the principal so that the end user is 
 prompted for a new password at first login.
