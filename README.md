@@ -1,16 +1,17 @@
 KDC-Ansible
 ============
 
-An Ansible Playbook for installing a pair of MIT KDC's configured 
-and replicating. This assumes ssh key logins have already been 
-configured for the hosts, or at least from the Ansible server to 
-both KDC servers or from the primary to the secondary instance if 
-this playbook is to be run from the master.
+An Ansible Playbook for installing a pair of MIT KDC's configured and
+replicating. This assumes ssh key logins have already been configured 
+for the hosts, or at least from the Ansible server to both KDC servers 
+or from the primary to the secondary instance if this playbook is to be 
+run from the master.
 
 The playbooks currently support the following distributions:
 - rhel7.x
 - centos7.x
-- ubuntu 20.04 (debian)
+- ubuntu 20.04 (or debian equivalent)
+
 
 ## Running the Playbook:
 

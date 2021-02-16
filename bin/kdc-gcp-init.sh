@@ -16,16 +16,22 @@ prefix=
 dryrun=0
 
 
-usage() {
-    echo ""
-    echo "Usage: $PNAME [options] [action] [path/to/tdh-gcp]"
-    echo "  [-bpnNtz]  :  Options from 'tdh-gcp/gcp-compute.sh'"
-    echo "                refer to \$TDH_GCP_PATH/gcp-compute.sh --help"
-    echo "                Note that by default the network is set to 'default'."
-    echo "  --dryrun   :  Enable dryrun mode on gcp-compute script"
-    echo "  [action]   :  Any action other than 'run' enables dryrun"
-    echo ""
-}
+usage="
+Initialize GCP Compute instances for a pair of KDC Servers.
+
+Synopsis:
+  $PNAME [options] [action] [path/to/tdh-gcp]
+
+Options:
+  [-bpnNtz]  :  Options from 'tdh-gcp/bin/gcp-compute.sh'
+                refer to '\$TDH_GCP_PATH/bin/gcp-compute.sh --help'
+                Note that network is set to 'default' unless provided.
+  --dryrun   :  Enable dryrun mode on gcp-compute script.
+  [action]   :  Any action other than 'run' enables dryrun.
+
+Default machine-type is 'n1-standard-1'
+"
+
 
 
 wait_for_host() {
@@ -63,8 +69,8 @@ while [ $# -gt 0 ]; do
             bootsize="$2"
             shift
             ;;
-        -h|--help)
-            usage
+        'help'|-h|--help)
+            echo "$usage"
             exit $rt
             ;;
         -p|--prefix)
@@ -104,8 +110,7 @@ if [ -z "$tdh_path" ] && [ -n "$TDH_GCP_PATH" ]; then
 fi
 
 if [ -z "$tdh_path" ]; then
-    echo "Usage: $PNAME [path/to/tdh-gcp] <machine-type>"
-    echo "  Default machine-type is 'n1-standard-1'"
+    echo "$usage"
     exit 1
 fi
 
@@ -118,8 +123,8 @@ if [ -z "$mtype" ]; then
 fi
 
 # default hostnames as tdh-kdc01 and tdh-kdc02
-cmd="${tdh_path}/bin/gcp-compute.sh --zone $zone \\
- --bootsize $bootsize --machine-type $mtype \\
+cmd="${tdh_path}/bin/gcp-compute.sh --zone $zone \
+ --bootsize $bootsize --machine-type $mtype \
  --network $network --subnet $subnet"
 
 if [ -n "$prefix" ]; then
@@ -146,6 +151,7 @@ if [ -n "$prefix" ]; then
 fi
 
 wait_for_host "$gssh $host"
+
 if [ $? -eq 0 ]; then
     ( $gssh $host --command 'yum install -y ansible' )
     ( $tdh_path/bin/gcp-push.sh . kdc-ansible $host )

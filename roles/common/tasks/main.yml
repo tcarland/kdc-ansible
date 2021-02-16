@@ -20,14 +20,14 @@
     apt:
       name: '{{ apt_kdc_packages }}'
       state: present
-  - name: Create /var/kerberos on Ubuntu
+  - name: Create /var/kerberos for Ubuntu
     file:
       path: '{{ krb5_path }}'
       owner: 'root'
       group: 'root'
       mode: 0755
       state: directory
-  - name: Create include dir on Ubuntu
+  - name: Create include dir for Ubuntu
     file:
       path: '/etc/krb5.conf.d'
       owner: 'root'

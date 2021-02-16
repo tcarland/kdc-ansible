@@ -1,5 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
+# Perform basic KDC actions against a list of principals
+# 
 PNAME=${0##*\/}
 
 infile=
@@ -8,18 +10,24 @@ princ=
 pw=
 
 
-usage() {
-    echo ""
-    echo "Usage: $PNAME [-f infile]  [action]  <princ> "
-    echo "  -f|--file <file> : Performs the action on a list of principals"
-    echo "  -h|--help        : Show help and exit"
-    echo "    [action]       : [ add|del|list ]"
-    echo "    <princ> <pw>   "
-    echo "" 
-    echo " If '--file' is not provided, the script will perform a one-time"
-    echo " action on the provided principal prompting for a password."
-    echo "" 
-}
+usage="
+A script for performing basic add, delete, and list actions on a 
+set of user principals.
+
+Synoposis:
+  $PNAME [-f infile] [action]  <princ> <pw>
+
+Options:
+  -f|--file <file> : Performs the action on a list of principals
+  -h|--help        : Show help and exit
+   [action]        : add|del|list 
+   <princ> <pw>   
+ 
+If '--file' is not provided, the script will perform a one-time
+action on the provided principal prompting for a password.
+File format is newline separated user and pw. 
+On [add] the script will prompt for password if not provided.
+" 
 
 
 # reads and sets a password
@@ -50,7 +58,7 @@ rt=0
 while [ $# -gt 0 ]; do
     case "$1" in
         'help'|-h|--help)
-            usage
+            echo "$usage"
             exit $rt
             ;;
         -f|--file)
@@ -59,10 +67,6 @@ while [ $# -gt 0 ]; do
             ;;
         --dryrun)
             dryrun=1
-            ;;
-        'version'|-V|--version)
-            version
-            exit $rt
             ;;
         *)
             action="$1"
@@ -76,7 +80,7 @@ done
 
 
 if [ -z "$infile" ] && [ "$princ" ]; then
-    usage
+    echo "$usage"
     exit 1
 fi
 
@@ -91,7 +95,7 @@ case "$action" in
                 read_password
             fi
             if [ -z "$pw" ]; then
-                echo "Error reading password."
+                echo "$PNAME Error obtaining password."
                 exit 1
             fi
             ( kadmin.local -q "addprinc -pw $pw $princ" )
@@ -109,7 +113,7 @@ case "$action" in
         ( kadmin.local -q "listprincs" )
         ;;
     *)
-        echo "Action not recognized. '$action'"
+        echo "$PNAME Action not recognized. '$action'"
         ;;
 esac
 

@@ -15,6 +15,7 @@ if [ -z "$inv" ] || [ -z "$hosts" ]; then
     exit 1
 fi
 
+# Convert hosts list to comma-delimited for Ansible.
 hosts=$( echo $hosts | sed -e 's/[[:space:]][[:space:]]*/,/g' )
 
 # Run playbook with list of hosts as inventory

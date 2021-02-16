@@ -17,13 +17,12 @@ pw=
 
 # ---------------------------------------------------------------------
 
-usage()
-{
-    echo "Usage: $PNAME [-p file] host1 host2 ..."
-    echo "  -p|--pwfile [file]  :  Read Admin password from file to not prompt"
-    echo "  Alternatively set CDH_HOSTS to the cluster host list"
-    echo ""
-}
+usage="
+Usage: $PNAME [-p file] host1 host2 ...
+  -p|--pwfile [file]  :  Read Admin password from file to avoid prompt
+  Alternatively set CDH_HOSTS to the cluster host list
+"
+
 
 
 read_password()
@@ -62,8 +61,8 @@ fi
 
 while [ $# -gt 0 ]; do
     case "$1" in
-        -h|--help)
-            usage
+        'help'|-h|--help)
+            echo "$usage"
             exit $rt
             ;;
         -p|--pwfile)
@@ -79,13 +78,13 @@ while [ $# -gt 0 ]; do
 done
 
 if [ -z "$pwfile" ]; then
-    echo "--pwfile not specified. Please provide the admin password."
+    echo " -> --pwfile not specified. Please provide the admin password."
     read_password
 fi
 
 # Check pwfile
 if ! [ -e "$pwfile" ]; then
-    echo "ERROR. File does not exist. '$pwfile'"
+    echo "$PNAME ERROR. File does not exist. '$pwfile'"
     exit 1
 fi
 
@@ -94,7 +93,7 @@ unlink $pwfile
 
 # Check pw
 if [ -z "$pw" ]; then
-    echo "Empty password not allowed"
+    echo "$PNAME Error, Empty password not allowed"
     exit 1
 fi
 
@@ -109,7 +108,7 @@ for host in $hosts; do
         ( ssh $host sudo groupadd -g $gid $group )
         rt=$?
         if [ $rt -ne 0 ]; then
-            echo "Error in ssh groupadd"
+            echo "$PNAME Error in ssh groupadd"
             break
         fi
         ((gid++))
