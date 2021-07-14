@@ -253,6 +253,7 @@ host principals for our primary and secondary KDC Servers.
 The examples below show `$kdc_secondary_hostname` as a variable, such as:
 ```
 kdc_secondary_hostname="kdc02.mycluster.internal"
+REALM="MYDOMAIN.COM"
 ```
 
 ### Primary KDC Server
@@ -351,10 +352,10 @@ contain a principal and the respective password as a spece delimited pair on
 one line.
 
  - The `ank` command *adds a new key*, and `ank` is an alias for the 
-`add_principal` command.
+  `add_principal` command.
 
  - The `+needchange` option configures the principal so that the end user is 
-prompted for a new password at first login.
+  prompted for a new password at first login.
 
  - Requiring a password change helps to ensure that the passwords set in the 
-`princnames` file are not such a security risk.
+  `princnames` file are not such a security risk.

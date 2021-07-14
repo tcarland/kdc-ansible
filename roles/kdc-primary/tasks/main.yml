@@ -30,12 +30,12 @@
 
 - name: Enable Services (RHEL/CentOS)
   block:
-  - name: Enable kadmin 
+  - name: Enable kadmin  (rhel)
     systemd:
       name: kadmin
       state: started
       enabled: yes
-  - name: Enable KDC
+  - name: Enable KDC (krb5kdc)
     systemd:
       name: krb5kdc
       state: started
@@ -45,12 +45,12 @@
 
 - name: Enable Services (Debian/Ubuntu)
   block:
-  - name: Enable kadmin 
+  - name: Enable kadmin (krb5-admin-server)
     systemd:
       name: krb5-admin-server
       state: started
       enabled: yes
-  - name: Enable KDC
+  - name: Enable KDC (krb5-kdc)
     systemd:
       name: krb5-kdc
       state: started
