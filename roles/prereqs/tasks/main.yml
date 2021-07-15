@@ -32,24 +32,3 @@
 - name: Increase Host Entropy
   become: true
   shell: 'rngd -r /dev/urandom'
-
-- name: Adjust Service Files (Ubuntu/Debian)
-  block:
-  - name: Set krb5-admin-server.service
-    replace:
-      path: '/etc/systemd/system/multi-user.target.wants/krb5-admin-server.service'
-      regexp: '/var/lib/krb5kdc'
-      replace: '/var/kerberos/krb5kdc'
-  - name:
-    replace:
-      path: '/etc/systemd/system/multi-user.target.wants/krb5-kdc.service'
-      regexp: '/var/lib/krb5kdc'
-      replace: '/var/kerberos/krb5kdc'
-  - name:
-    replace:
-      path: '/etc/systemd/system/multi-user.target.wants/krb5-kpropd.service'
-      regexp: '/var/lib/krb5kdc'
-      replace: '/var/kerberos/krb5kdc'
-  become: true
-  tags: [ kdc-init ]
-  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'

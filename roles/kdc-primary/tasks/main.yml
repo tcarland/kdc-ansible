@@ -34,6 +34,7 @@
     systemd:
       name: kadmin
       state: started
+      daemon_reload: yes
       enabled: yes
   - name: Enable KDC (krb5kdc)
     systemd:
@@ -49,6 +50,7 @@
     systemd:
       name: krb5-admin-server
       state: started
+      daemon_reload: yes
       enabled: yes
   - name: Enable KDC (krb5-kdc)
     systemd:
