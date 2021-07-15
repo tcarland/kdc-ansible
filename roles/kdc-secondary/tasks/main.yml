@@ -24,28 +24,46 @@
   tags: [ kdc-init ]
   become: true
 
+- name: Set /var/lib link (ubuntu)
+  block:
+  - name: Clear existing directory
+    file:
+      path: '/var/lib/krb5kdc'
+      state: absent
+  - name: Create /var/lib symlink
+    file:
+      src: /var/kerberos/krb5kdc
+      dest: /var/lib/krb5kdc
+      state: link
+  tags: [ kdc-init ]
+  become: true
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+
 - name: Configure /etc/default DAEMON_ARGS (ubuntu)
   become: true
   copy:
     src: "krb5-kpropd"
     dest: "/etc/default/krb5-kpropd"
     mode: '0644'
+  tags: [ kdc-init ]
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
 - name: Enable kpropd (rhel/centos)
   become: true
   systemd:
     name: kprop
-    state: started
+    state: restarted
     daemon_reload: yes
     enabled: yes
+  tags: [ kdc-init ]
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
 
 - name: Enable kpropd (ubuntu)
   become: true
   systemd:
     name: krb5-kpropd
-    state: started
+    state: restarted
     daemon_reload: yes
     enabled: yes
+  tags: [ kdc-init ]
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
