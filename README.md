@@ -16,12 +16,12 @@ The playbooks currently support the following distributions:
 ## Running the Playbook:
 
 A script is provided to simplify execution of the main playbook `kdc-site.yml`.
-```
+```sh
 $ ./bin/kdc-install.sh [inventory_name|env]
 ```
 
 Which is equivalent to the ansible command:
-```
+```sh
 $ ansible-playbook -i inventory/${env}/hosts kdc-site.yml
 ```
 
@@ -88,11 +88,17 @@ kdc_admin_password: 'somepassword'
 
 - **kprop decrypt integrity check failed**:  
   On re-deployments, there can be issues setting the host keytab in
-`/etc/krb5.keytab`. If attempting to re-deploy with a fresh database,
-pre-existing keytab files can cause kprop to fail. Remove any pre-existing
-host keytab files prior to a fresh install.
+  `/etc/krb5.keytab`. If attempting to re-deploy with a fresh database,
+  pre-existing keytab files can cause kprop to fail. Remove any pre-existing
+  host keytab files prior to a fresh install.
 
-- TODO: Add some uninstall notes
+- Ubuntu Kerberos path.
+  This playbook standarizes on using the same *var* path for kerberos 
+  for all linux platforms. For RHEL-based installs, the default db path 
+  is */var/kerberos/krb5kdc*.  We use the same path for Debian/Ubuntu 
+  distros, though the kerberos packages use */var/lib/kerberos* by 
+  default, which means we must configure *.service* files and notably
+  `kpropd` on the slave to use this custom path.
 
 <br>
 
@@ -100,8 +106,8 @@ host keytab files prior to a fresh install.
 ## KDC Usage:
 
 - Add a new admin principal
-  ```
-  MYPW="mytmppw"
+  ```sh
+  TMPPW="mytmppw"
   USERNAME="adminuser"
   ank +needchange -pw $TMPPW  $USERNAME/admin
   ```
@@ -251,7 +257,7 @@ The primary KDC first creates a database, an admin principal, and two
 host principals for our primary and secondary KDC Servers.
 
 The examples below show `$kdc_secondary_hostname` as a variable, such as:
-```
+```sh
 kdc_secondary_hostname="kdc02.mycluster.internal"
 REALM="MYDOMAIN.COM"
 ```
@@ -259,30 +265,30 @@ REALM="MYDOMAIN.COM"
 ### Primary KDC Server
 
 - Create KDC Database:
-  ```
+  ```sh
   /usr/sbin/kdb5_util create -s -P <passwd>
   ```
 
 - Add an Admin Principal
-  ```
+  ```sh
   kadmin.local -q "addprinc myuser/admin
   ```
 
 - Add a Host Principal and Keytab
-  ```
+  ```sh
   ktadmin.local -q "addprinc -randkey host/$(hostname -f)"
-  kadmin.local -q "ktadd host/$(hostname -f)@REALM.COM"
+  kadmin.local -q "ktadd host/$(hostname -f)@${REALM}"
   ```
 
 - Add a Host Principal for the secondary KDC server on primary
-  ```
+  ```sh
   kadmin.local -q "addprinc -randkey host/$kdc_secondary_hostname"
   ```
 
 - Start the services
-  ```
-  systemctl enable krb5kdc && systemctl start krb5kdc
-  systemctl enable kadmin && systemctl start kadmin
+  ```sh
+  systemctl enable krb5-kdc && systemctl start krb5-kdc
+  systemctl enable krb5-admin-server && systemctl start krb5-admin-server
   ```
 
 ### Secondary KDC Server
@@ -294,40 +300,41 @@ yet started on the secondary, the db propagation will properly overwrite
 the db.
 
 - Create the KDC Database
-  ```
+  ```sh
   /usr/sbin/kdb5_util create -s -P <pw>
   ```
 
 - Acquire the host key from the primary KDC. Note the use of `kadmin` instead 
   of `kadmin.local` which would connect to the secondary and not the primary.
-  ```
-  kadmin -p tca/admin -q "ktadd host/$kdc_secondary_hostname@REALM.COM"
+  ```sh
+  kadmin -p tca/admin -q "ktadd host/$kdc_secondary_hostname@${REALM}"
   ```
 
 - Start kpropd only.
-  ```
-  systemctl enable kprop && systemctl start kprop
+  ```sh
+  systemctl enable krb5-kpropd && systemctl start krb5-kpropd
   ```
 
 ### Propogate Primary KDC DB to Secondary 
 
 - Run a dump on the primary.
-  ```
+  ```sh
   kdb5_util dump /var/kerberos/krb5kdc/kdb_datatrans
   ```
 
 - Send to secondary:
-  ```
+  ```sh
   kprop -f /var/kerberos/krb5kdc/kdb_datatrans $kdc_secondary_hostname"
   ```
 
 - On success of DB propagation, start the secondary KDC.
-  ```
-  systemctl enable krb5kdc && systemctl start krb5kdc
+  ```sh
+  systemctl enable krb5-kdc && systemctl start krb5-kdc
   ```
 
-- Setup a crontab job to run the dump and kprop commands regularly.
-  ```
+- Setup a crontab job to run the dump and kprop commands regularly 
+  from the master.
+  ```sh
   $ echo "*/5 * * * * /sbin/kdb5_util dump /var/kerberos/krb5kdc/kdb_datatrans && \
   /sbin/kprop -f /var/kerberos/krb5kdc/kdb_datatrans $kdc_secondary_hostname 2>&1 >/dev/null" > kprop.crontab
   $ crontab kprop.crontab
@@ -340,8 +347,7 @@ Principals. This is useful when you want to add many new principals to the
 database.
 
 The following shell script line shows the creation of new principals:
-
-```
+```sh
 awk '{ print "ank +needchange -pw", $2, $1 }' < /tmp/princnames | \
 time /usr/sbin/kadmin.local> /dev/null
 ```
