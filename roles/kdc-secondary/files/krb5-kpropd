@@ -1,0 +1,2 @@
+
+DAEMON_ARGS="-a /var/kerberos/krb5kdc/kpropd.acl"

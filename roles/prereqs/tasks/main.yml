@@ -10,14 +10,16 @@
       name: '{{ yum_prereq_packages }}'
       lock_timeout: 180
       state: present
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
   become: true
+  tags: [ kdc-init ]
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
 
 - name: Install Packages (apt)
   become: true
   apt:
     name: '{{ apt_prereq_packages }}'
     state: present
+  tags: [ kdc-init ]
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
 
 - name: Copy /etc/krb5.conf

@@ -1,6 +1,6 @@
 ---
 - name: Install MIT KDC
-  hosts: all
+  hosts: kdc
   gather_facts: true
 
 - name: Deploy KDC Primary

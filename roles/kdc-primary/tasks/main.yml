@@ -30,30 +30,32 @@
 
 - name: Enable Services (RHEL/CentOS)
   block:
-  - name: Enable kadmin 
+  - name: Enable kadmin  (rhel)
     systemd:
       name: kadmin
-      state: started
+      state: restarted
+      daemon_reload: yes
       enabled: yes
-  - name: Enable KDC
+  - name: Enable KDC (krb5kdc)
     systemd:
       name: krb5kdc
-      state: started
+      state: restarted
       enabled: yes
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
   become: true
 
 - name: Enable Services (Debian/Ubuntu)
   block:
-  - name: Enable kadmin 
+  - name: Enable kadmin (krb5-admin-server)
     systemd:
       name: krb5-admin-server
-      state: started
+      state: restarted
+      daemon_reload: yes
       enabled: yes
-  - name: Enable KDC
+  - name: Enable KDC (krb5-kdc)
     systemd:
       name: krb5-kdc
-      state: started
+      state: restarted
       enabled: yes
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
   become: true
