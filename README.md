@@ -43,6 +43,12 @@ Note the command and inventory references above are relative to the project root
 
 Create an inventory for a KDC pair (two hosts to run in a master/slave 
 configuration, referred to as `primary` and `secondary` from here out. 
+
+Use the `inventory/example` as the configuration template.
+```sh
+cp -r inventory/example inventory/$envname
+```
+
 The playbook currently only accounts for a single secondary KDC.  
 For a given inventory you might have a *hosts* file of the following:
 ```
@@ -83,6 +89,7 @@ A corresponding *vault* file defines the KDC secrets:
 kdc_db_password: 'somepassword'
 kdc_admin_password: 'somepassword'
 ```
+
 
 ### Install Notes 
 
