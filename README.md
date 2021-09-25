@@ -8,21 +8,21 @@ or from the primary to the secondary instance if this playbook is to be
 run from the master.
 
 The playbooks currently support the following distributions:
-- rhel7.x
-- centos7.x
-- ubuntu 20.04 (or debian equivalent)
+- rhel7|8
+- centos7|8
+- ubuntu 18|20.04 (or debian equivalent)
 
 
 ## Running the Playbook:
 
 A script is provided to simplify execution of the main playbook `kdc-site.yml`.
 ```sh
-$ ./bin/kdc-install.sh [inventory_name|env]
+$ ./bin/kdc-install.sh [inventory_name|env_name]
 ```
 
 Which is equivalent to the ansible command:
 ```sh
-$ ansible-playbook -i inventory/${env}/hosts kdc-site.yml
+$ ansible-playbook -i inventory/${envname}/hosts kdc-site.yml
 ```
 
 Clients can be installed with the *./bin/kdc-clients.sh* script which will
