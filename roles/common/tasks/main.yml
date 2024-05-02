@@ -1,76 +1,76 @@
 ---
 - name: Run RHEL/Centos tasks
-  block:
-  - name: Install Primary KDC Packages (yum)
-    yum:
-      name: '{{ yum_kdc_packages }}'
-      lock_timeout: 180
-      state: present
-  - name: Copy kdc.conf
-    template:
-      src: '{{ kdc_conf }}'
-      dest: "/var/kerberos/krb5kdc/kdc.conf"
-      mode: 0600
-  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
   become: true
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+  block:
+    - name: Install Primary KDC Packages
+      ansible.builtin.yum:
+        name: '{{ common_kdc_yum }}'
+        lock_timeout: 180
+        state: present
+    - name: Copy kdc.conf
+      ansible.builtin.template:
+        src: '{{ kdc_conf }}'
+        dest: "/var/kerberos/krb5kdc/kdc.conf"
+        mode: '0600'
 
 - name: Run Debian/Ubuntu tasks
-  block:
-  - name: Install Primary KDC Packages (apt)
-    apt:
-      name: '{{ apt_kdc_packages }}'
-      state: present
-  - name: Create /var/kerberos for Ubuntu
-    file:
-      path: '{{ krb5_path }}'
-      owner: 'root'
-      group: 'root'
-      mode: 0755
-      state: directory
-  - name: Create include dir for Ubuntu
-    file:
-      path: '/etc/krb5.conf.d'
-      owner: 'root'
-      group: 'root'
-      mode: 0755
-      state: directory
-  - name: Copy kdc.conf (Ubuntu)
-    template:
-      src: '{{ kdc_conf }}'
-      dest: "/etc/krb5kdc/kdc.conf"
-      mode: 0600
-  - name: Set krb5-admin-server.service
-    replace:
-      path: '/lib/systemd/system/krb5-admin-server.service'
-      regexp: '/var/lib/krb5kdc'
-      replace: '/var/kerberos/krb5kdc'
-  - name:
-    replace:
-      path: '/lib/systemd/system/krb5-kdc.service'
-      regexp: '/var/lib/krb5kdc'
-      replace: '/var/kerberos/krb5kdc'
-  - name:
-    replace:
-      path: '/lib/systemd/system/krb5-kpropd.service'
-      regexp: '/var/lib/krb5kdc'
-      replace: '/var/kerberos/krb5kdc'
-  tags: [ kdc-init ]
-  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
   become: true
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  tags: [kdc-init]
+  block:
+    - name: Install Primary KDC Packages
+      ansible.builtin.apt:
+        name: '{{ common_kdc_apt }}'
+        state: present
+    - name: Create /var/kerberos for Ubuntu
+      ansible.builtin.file:
+        path: '{{ krb5_path }}'
+        owner: 'root'
+        group: 'root'
+        mode: '0755'
+        state: directory
+    - name: Create include dir for Ubuntu
+      ansible.builtin.file:
+        path: '/etc/krb5.conf.d'
+        owner: 'root'
+        group: 'root'
+        mode: '0755'
+        state: directory
+    - name: Copy kdc.conf (Ubuntu)
+      ansible.builtin.template:
+        src: '{{ kdc_conf }}'
+        dest: "/etc/krb5kdc/kdc.conf"
+        mode: '0600'
+    - name: Set krb5-admin-server.service
+      ansible.builtin.replace:
+        path: '/lib/systemd/system/krb5-admin-server.service'
+        regexp: '/var/lib/krb5kdc'
+        replace: '/var/kerberos/krb5kdc'
+    - name: Set kdc service kerberos path
+      ansible.builtin.replace:
+        path: '/lib/systemd/system/krb5-kdc.service'
+        regexp: '/var/lib/krb5kdc'
+        replace: '/var/kerberos/krb5kdc'
+    - name: Set kprop service kerberos path
+      ansible.builtin.replace:
+        path: '/lib/systemd/system/krb5-kpropd.service'
+        regexp: '/var/lib/krb5kdc'
+        replace: '/var/kerberos/krb5kdc'
 
 - name: Copy kadm5.acl
   become: true
-  template:
+  ansible.builtin.template:
     src: '{{ kadm5_acl }}'
     dest: "/var/kerberos/krb5kdc/kadm5.acl"
-    mode: 0600
+    mode: '0600'
 
 - name: SSH PermitRootLogin prohibit-password
   become: true
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: '/etc/ssh/sshd_config'
     regexp: '^PermitRootLogin'
     line: 'PermitRootLogin prohibit-password'
     state: present
-    backup: yes
-  notify: restart_sshd
+    backup: true
+  notify: Restart_sshd

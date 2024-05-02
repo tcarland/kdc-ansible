@@ -56,26 +56,26 @@ read_password()
 rt=0
 
 while [ $# -gt 0 ]; do
-    case "$1" in
-        'help'|-h|--help)
-            echo "$usage"
-            exit $rt
-            ;;
-        -f|--file)
-            infile="$2"
-            shift
-            ;;
-        --dryrun)
-            dryrun=1
-            ;;
-        *)
-            action="$1"
-            princ="$2"
-            pw="$3"
-            shift $#
-            ;;
-    esac
-    shift
+case "$1" in
+    'help'|-h|--help)
+        echo "$usage"
+        exit $rt
+        ;;
+    -f|--file)
+        infile="$2"
+        shift
+        ;;
+    --dryrun)
+        dryrun=1
+        ;;
+    *)
+        action="$1"
+        princ="$2"
+        pw="$3"
+        shift $#
+        ;;
+esac
+shift
 done
 
 
@@ -86,35 +86,35 @@ fi
 
 
 case "$action" in 
-    add)
-        if [ -n "$infile" ]; then
-            ( awk '{ print "ank +needchange -pw", $2, $1 }' < $infile | \
-            time /usr/sbin/kadmin.local )
-        else
-            if [ -z "$pw" ]; then
-                read_password
-            fi
-            if [ -z "$pw" ]; then
-                echo "$PNAME Error obtaining password."
-                exit 1
-            fi
-            ( kadmin.local -q "addprinc -pw $pw $princ" )
+add)
+    if [ -n "$infile" ]; then
+        ( awk '{ print "ank +needchange -pw", $2, $1 }' < $infile | \
+        time /usr/sbin/kadmin.local )
+    else
+        if [ -z "$pw" ]; then
+            read_password
         fi
-        ;;
-    del)
-        if [ -n "$infile" ]; then
-            ( awk '{ print "delprinc ", $1 }' < $infile | \
-            time /usr/sbin/kadmin.local )
-        else
-            ( kadmin.local -q "delprinc $princ" )
+        if [ -z "$pw" ]; then
+            echo "$PNAME Error obtaining password."
+            exit 1
         fi
-        ;;
-    list)
-        ( kadmin.local -q "listprincs" )
-        ;;
-    *)
-        echo "$PNAME Action not recognized. '$action'"
-        ;;
+        ( kadmin.local -q "addprinc -pw $pw $princ" )
+    fi
+    ;;
+del)
+    if [ -n "$infile" ]; then
+        ( awk '{ print "delprinc ", $1 }' < $infile | \
+        time /usr/sbin/kadmin.local )
+    else
+        ( kadmin.local -q "delprinc $princ" )
+    fi
+    ;;
+list)
+    ( kadmin.local -q "listprincs" )
+    ;;
+*)
+    echo "$PNAME Action not recognized. '$action'"
+    ;;
 esac
 
 exit $?

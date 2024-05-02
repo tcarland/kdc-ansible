@@ -10,7 +10,7 @@ run from the master.
 The playbooks currently support the following distributions:
 - rhel7|8
 - centos7|8
-- ubuntu 18|20.04 (or debian equivalent)
+- ubuntu 18+ (or debian equivalent)
 
 
 ## Running the Playbook:

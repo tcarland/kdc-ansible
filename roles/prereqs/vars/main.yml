@@ -2,16 +2,16 @@
 krb5_conf: krb5.conf
 crontab_file: root-crontab.txt
 
-yum_prereq_packages:
+prereq_packages_yum:
  - openssl-devel
  - krb5-libs
  - krb5-workstation
  - rng-tools
 
-yum_remove_packages:
+prereq_remove_packages_yum:
  - mariadb-libs
 
-apt_prereq_packages:
+prereq_packages_apt:
  - openssl
  - krb5-user
  - rng-tools

@@ -1,34 +1,34 @@
 ---
 - name: Configure KDC RHEL/Centos Packages
-  block:
-  - name: Remove unwanted packages (yum)
-    yum:
-      name: '{{ yum_remove_packages }}'
-      state: absent
-  - name: Install Packages (yum)
-    yum:
-      name: '{{ yum_prereq_packages }}'
-      lock_timeout: 180
-      state: present
   become: true
-  tags: [ kdc-init ]
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+  tags: [kdc-init]
+  block:
+    - name: Remove unwanted packages (yum)
+      ansible.builtin.yum:
+        name: '{{ prereq_remove_packages_yum }}'
+        state: absent
+    - name: Install Packages (yum)
+      ansible.builtin.yum:
+        name: '{{ prereq_packages_yum }}'
+        lock_timeout: 180
+        state: present
 
 - name: Install Packages (apt)
   become: true
-  apt:
-    name: '{{ apt_prereq_packages }}'
-    state: present
-  tags: [ kdc-init ]
   when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  tags: [kdc-init]
+  ansible.builtin.apt:
+    name: '{{ prereq_packages_apt }}'
+    state: present
 
 - name: Copy /etc/krb5.conf
   become: true
-  template:
+  ansible.builtin.template:
     src: '{{ krb5_conf }}'
     dest: "/etc/krb5.conf"
-    mode: 0644
+    mode: '0644'
 
 - name: Increase Host Entropy
   become: true
-  shell: 'rngd -r /dev/urandom'
+  ansible.builtin.shell: 'rngd -r /dev/urandom'
