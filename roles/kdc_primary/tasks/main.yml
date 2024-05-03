@@ -1,0 +1,61 @@
+---
+- name: Check for an existing KDC DB
+  become: true
+  ansible.builtin.stat:
+    path: '{{ kdc_db_file }}'
+  register: kdcdbstat
+
+- name: Configure the KDC DB
+  become: true
+  when: not kdcdbstat.stat.exists
+  tags: [kdc-init]
+  block:
+    - name: Create the db
+      ansible.builtin.shell: '/usr/sbin/kdb5_util create -s -P {{ kdc_db_password }}'
+    - name: Create KDC Admin
+      ansible.builtin.shell: 'kadmin.local -q "addprinc -pw {{ kdc_admin_password }} {{ kdc_admin_principal }}"'
+    - name: Add Primary Host Principal
+      ansible.builtin.shell: 'kadmin.local -q "addprinc -randkey host/{{ kdc_primary_hostname }}@{{ kerberos_realm }}"'
+    - name: Create Primary Host Keytab
+      ansible.builtin.shell: 'kadmin.local -q "ktadd host/{{ kdc_primary_hostname }}@{{ kerberos_realm }}"'
+    - name: Add Secondary Host Principal
+      ansible.builtin.shell: 'kadmin.local -q "addprinc -randkey host/{{ kdc_secondary_hostname }}@{{ kerberos_realm }}"'
+
+- name: Copy crontab file
+  become: true
+  ansible.builtin.template:
+    src: '{{ crontab_file }}'
+    dest: "/root/crontab.txt"
+    mode: '0644'
+
+- name: Enable Services (RHEL/CentOS)
+  become: true
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+  block:
+    - name: Enable kadmin  (rhel)
+      ansible.builtin.systemd:
+        name: kadmin
+        state: restarted
+        daemon_reload: true
+        enabled: true
+    - name: Enable KDC (krb5kdc)
+      ansible.builtin.systemd:
+        name: krb5kdc
+        state: restarted
+        enabled: true
+
+- name: Enable Services (Debian/Ubuntu)
+  become: true
+  when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
+  block:
+    - name: Enable kadmin (krb5-admin-server)
+      ansible.builtin.systemd:
+        name: krb5-admin-server
+        state: restarted
+        daemon_reload: true
+        enabled: true
+    - name: Enable KDC (krb5-kdc)
+      ansible.builtin.systemd:
+        name: krb5-kdc
+        state: restarted
+        enabled: true

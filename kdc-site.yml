@@ -5,62 +5,62 @@
 
 - name: Deploy KDC Primary
   hosts: primary
-  tags: [ 'primary' ]
+  tags: ['primary']
   roles:
-    - 'kdc-primary'
+    - 'kdc_primary'
 
 - name: Deploy Secondary KDC
   hosts: secondary
-  tags: [ 'secondary' ]
+  tags: ['secondary']
   roles:
-    - 'kdc-secondary'
+    - 'kdc_secondary'
 
 - name: Dump Primary KDC DB
   hosts: primary
   tasks:
     - name: Run dump
-      shell: "kdb5_util dump /var/kerberos/krb5kdc/kdb_datatrans"
+      ansible.builtin.shell: "kdb5_util dump /var/kerberos/krb5kdc/kdb_datatrans"
     - name: Propagate dump file
-      shell: "kprop -f /var/kerberos/krb5kdc/kdb_datatrans {{ kdc_secondary_hostname }}"
-  tags: [ 'kdc-init' ]
+      ansible.builtin.shell: "kprop -f /var/kerberos/krb5kdc/kdb_datatrans {{ kdc_secondary_hostname }}"
   become: true
+  tags: ['kdc-init']
 
 - name: Enable Secondary KDC (RHEL/CentOS)
   hosts: secondary
   tasks:
-    - name: systemd start krb5kdc
-      systemd:
+    - name: Systemd start krb5kdc
+      ansible.builtin.systemd:
         name: krb5kdc
         state: started
-        enabled: yes
+        enabled: true
       when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
-  tags: [ 'secondary' ]
+  tags: ['secondary']
   become: true
 
 - name: Enable Secondary KDC (Ubuntu)
   hosts: secondary
   tasks:
-    - name: systemd start krb5kdc
-      systemd:
+    - name: Systemd start krb5kdc
+      ansible.builtin.systemd:
         name: krb5-kdc
         state: started
-        enabled: yes
+        enabled: true
       when: ansible_distribution == 'Debian' or ansible_distribution == 'Ubuntu'
-  tags: [ 'secondary' ]
+  tags: ['secondary']
   become: true
 
 - name: Setup KDC Replication
   hosts: primary
   tasks:
     - name: Setup kprop crontab
-      shell: 'crontab /root/crontab.txt'
-  tags: [ 'primary' ]
+      ansible.builtin.shell: 'crontab /root/crontab.txt'
+  tags: ['primary']
   become: true
 
 - name: Configure KDC Renewable Tickets
   hosts: primary
   tasks:
-    - name: krbtgt  +allow_renewable
-      shell: 'kadmin.local -q "modprinc -maxlife 1days -maxrenewlife 7days +allow_renewable krbtgt/{{ kerberos_realm }}@{{ kerberos_realm }}"'
-  tags: [ 'primary' ]
+    - name: Allow renewable
+      ansible.builtin.shell: 'kadmin.local -q "modprinc -maxlife 1days -maxrenewlife 7days +allow_renewable krbtgt/{{ kerberos_realm }}@{{ kerberos_realm }}"'
+  tags: ['primary']
   become: true

@@ -8,11 +8,11 @@ kpropd_acl: kpropd.acl
 kdc_db_file: '{{ krb5_path }}/principal'
 kpropd_file: '{{ krb5_path }}/{{ kpropd_acl }}'
 
-yum_kdc_packages:
+common_kdc_yum:
  - krb5-server
  - logrotate
 
-apt_kdc_packages:
+common_kdc_apt:
  - krb5-kdc
  - krb5-admin-server
  - krb5-kpropd
